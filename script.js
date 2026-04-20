@@ -251,13 +251,12 @@ function playWrongSound() {
 }
 
 function applySoundSettings() {
-    const sfxVolume = isSoundOn ? masterVolume : 0;
-    const bgmVolume = isSoundOn ? masterVolume * 0.75 : 0;
+    const bgmVolume = isSoundOn ? masterVolume : 0;
 
-    matchSound.volume = sfxVolume;
-    wrongSound.volume = sfxVolume;
-    winSound.volume = sfxVolume;
-    loseSound.volume = sfxVolume;
+    matchSound.volume = isSoundOn ? masterVolume * 0.72 : 0;
+    wrongSound.volume = isSoundOn ? masterVolume * 0.65 : 0;
+    winSound.volume = isSoundOn ? masterVolume * 0.8 : 0;
+    loseSound.volume = isSoundOn ? masterVolume * 0.8 : 0;
     bgmAudio.volume = bgmVolume;
 
     if (soundBtn) {
