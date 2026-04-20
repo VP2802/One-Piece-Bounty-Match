@@ -1,6 +1,6 @@
 # One Piece: Bounty Match
 
-A browser-based **One Piece themed Pikachu matching game** built with **HTML, CSS, and JavaScript**.
+A browser-based **One Piece themed tile-matching game** inspired by classic Pikachu gameplay, built with **HTML, CSS, and Vanilla JavaScript**.
 
 ## Live Demo
 
@@ -8,32 +8,31 @@ A browser-based **One Piece themed Pikachu matching game** built with **HTML, CS
 
 ## About the Project
 
-**One Piece: Bounty Match** is a browser game inspired by the classic Pikachu tile-matching gameplay, redesigned with a **One Piece pirate theme** and a more polished visual style.
+**One Piece: Bounty Match** reimagines the classic connect-and-match format with a pirate-themed presentation, multiple difficulty modes, continuous runs, dynamic board mechanics, and a polished UI.
 
-Players match identical character tiles by connecting them with a valid path of at most **2 turns**. The game includes multiple difficulty modes, combo-based scoring, board shifting mechanics in higher modes, a stylized **Wanted Poster timer**, and a persistent local leaderboard.
+Players clear pairs of identical tiles by connecting them with a valid path of at most **2 turns**. As difficulty increases, the board becomes larger, reshuffle access becomes more limited, and advanced movement rules such as board shifting make matches harder to predict.
 
-The project supports **2 play types**:
-
-- **Single Run**: play exactly 1 stage and finish immediately
-- **Continuous**: keep playing stage after stage, accumulate total run score, and press **End** anytime to summarize the run
+The game supports both **quick single-stage play** and **continuous multi-stage runs**, with score tracking, time pressure, local leaderboard persistence, and custom audio/notification systems.
 
 ---
 
-## Features
+## Core Features
 
-- **4 difficulty modes**: Easy, Hard, Insane, Impossible
+- **4 game modes**: Easy, Hard, Insane, Impossible
 - **2 play types**: Single Run and Continuous
-- **One Piece themed UI**
-- **Unique board background for each mode**
+- **One Piece styled UI and board themes**
 - **Wanted Poster countdown timer**
-- **Combo scoring system**
-- **Hint system** for Easy mode
-- **Manual reshuffle** for supported modes
+- **Combo-based scoring system**
+- **Hints in Easy mode**
+- **Manual reshuffle system** with per-mode limits
 - **Board shifting mechanics** in higher difficulties
-- **Pause / Resume / Restart / Home / End** controls
-- **Sound toggle** with state preserved across stages
-- **Leaderboard** saved with `localStorage`
-- **Leaderboard tracks score, time, mode, and cleared stages**
+- **Pause / Resume / Restart / Home / End controls**
+- **Persistent leaderboard** with score, time, mode, and stages cleared
+- **Custom in-game toast notifications** instead of browser `alert()`
+- **Sound toggle + volume slider**
+- **Background music system** with:
+  - normal BGM playlist during regular play
+  - danger BGM playlist for the final 60 seconds
 - **Responsive layout** for smaller screens
 
 ---
@@ -42,68 +41,66 @@ The project supports **2 play types**:
 
 ### Single Run
 - Play exactly **1 stage**
-- Win or lose, the result is shown immediately
-- Best for quick score runs
+- The result screen appears immediately after win or loss
+- Best for quick score attempts
 
 ### Continuous
-- Keep playing multiple stages in a row
-- **Run total score** is accumulated across cleared stages
-- The top bar displays:
-  - **Total** = accumulated run score
-  - **Stage Score** = current stage score
+- Progress through stages back-to-back in the same run
+- **Run total score** accumulates across cleared stages
+- Top bar shows:
+  - **Total** = total score of the run
+  - **Stage Score** = score of the current stage only
   - **Stage** = current stage number
-- After clearing a stage, a short **stage clear overlay** appears, then the next stage begins automatically
-- Press **End** anytime to stop and save the run
-- Leaderboard records how many stages were cleared in that run
+- After clearing a stage, a short stage-clear screen appears before the next stage starts automatically
+- Press **End** anytime to finish the run and save the result
 
 ---
 
 ## Game Modes
 
-| Mode | Time | Hints | Board Size | Special Rules |
-|------|------|-------|------------|---------------|
-| Easy | 15 minutes | 3 | 9 x 10 | Use hints first, then **Reshuffle unlocks after hints run out** (up to 5 uses) |
-| Hard | 12 minutes | 0 | 10 x 15 | 3 manual reshuffles |
-| Insane | 10 minutes | 0 | 12 x 15 | 1 manual reshuffle + fixed random shift direction for the whole stage |
-| Impossible | 8 minutes | 0 | 15 x 16 | No manual reshuffle + random shift after every successful match |
+| Mode | Time | Hints | Board Size | Reshuffle | Special Rules |
+|------|------|-------|------------|-----------|---------------|
+| Easy | 15 minutes | 3 | 9 x 10 | 5 | Reshuffle only unlocks after all hints are used |
+| Hard | 12 minutes | 0 | 10 x 15 | 3 | Standard high-density board |
+| Insane | 10 minutes | 0 | 12 x 15 | 1 | Fixed random shift direction for the whole stage |
+| Impossible | 8 minutes | 0 | 15 x 16 | 0 | Board shifts in a random direction after every successful match |
 
 ---
 
-## Scoring
+## Scoring System
 
 ### Match Score
-Each successful match gives:
-- **Base score**: 100 points
-- **Combo bonus** depending on difficulty and combo streak
+Each successful match grants:
+- **Base score**: `100`
+- **Combo bonus** based on current combo streak and difficulty
 
-### Combo Bonus by Mode
-- **Easy**: +10 per combo level
-- **Hard**: +15 per combo level
-- **Insane**: +25 per combo level
-- **Impossible**: +35 per combo level
+### Combo Bonus Per Level
+- **Easy**: `+10`
+- **Hard**: `+15`
+- **Insane**: `+25`
+- **Impossible**: `+35`
 
-Only up to the first **5 combo levels** are counted for combo scaling.
+Combo scaling is capped at the first **5 combo levels**.
 
 ### Time Bonus Multiplier
-Remaining time is converted into bonus points when clearing a stage:
-
-- **Easy**: x8
-- **Hard**: x12
-- **Insane**: x16
-- **Impossible**: x20
+Remaining time is converted into bonus score on stage clear:
+- **Easy**: `x8`
+- **Hard**: `x12`
+- **Insane**: `x16`
+- **Impossible**: `x20`
 
 ### Mode Bonus
-- **Easy**: 0
-- **Hard**: 500
-- **Insane**: 1200
-- **Impossible**: 2500
+- **Easy**: `0`
+- **Hard**: `500`
+- **Insane**: `1200`
+- **Impossible**: `2500`
 
 ### Final Stage Score
-When a stage is cleared:
+```text
+Stage Total = Match Score + Time Bonus + Mode Bonus
+```
 
-**Stage Total = Match Score + Time Bonus + Mode Bonus**
-
-In **Continuous** mode, only **cleared stages** are added into the run total.
+In **Continuous** mode, only cleared stages are added into the run total.
 
 ### Leaderboard Ranking Priority
 1. Higher **score**
@@ -116,30 +113,53 @@ In **Continuous** mode, only **cleared stages** are added into the run total.
 
 ### Hint
 - Only available in **Easy** mode
-- Each use highlights a valid pair
-- Using a hint reduces score by **200**
-- When all hints are used, the **Hint button disappears**
+- Each use reveals a valid pair
+- Each hint costs **200 score**
+- When hints reach `0`, the **Hint button disappears**
+- In Easy mode, using all hints also **unlocks Reshuffle**
 
 ### Reshuffle
-- **Easy**: Reshuffle only appears **after all hints are used**
-- **Hard**: Available immediately
-- **Insane**: Available immediately
-- **Impossible**: Not available
+- **Easy**: hidden until all hints are used
+- **Hard**: available immediately
+- **Insane**: available immediately
+- **Impossible**: unavailable
 
-If the board has no valid move:
-- the game reshuffles the remaining tiles
-- if repeated reshuffles still fail, the remaining board can be regenerated to prevent deadlock
+If no valid move exists:
+- the game attempts to reshuffle the remaining tiles
+- if repeated reshuffles still fail, the remaining board may be rebuilt to avoid deadlock
+
+---
+
+## Audio System
+
+The game includes a simplified sound system and playlist-based background music.
+
+### Sound Effects
+- `match.mp3`
+- `wrong.mp3`
+- `win.mp3`
+- `lose.mp3`
+
+### Background Music
+- **Normal playlist**: plays during standard gameplay
+- **Danger playlist**: automatically replaces the normal playlist when the timer reaches the last **60 seconds**
+
+### Volume Control
+- Sound can be toggled on/off
+- A **volume slider** lets the player control audio intensity
+- Sound settings are saved with `localStorage`
 
 ---
 
 ## Controls
 
-- **Sound**: turn sound on/off
-- **Hints**: reveal a valid move in Easy mode
-- **Reshuffle**: shuffle the remaining board when allowed
-- **Pause**: pause or resume the current stage
-- **Restart**: restart the current run
-- **End**: finish the current continuous run and show the summary
+- **Sound**: mute/unmute all game audio
+- **Volume Slider**: adjust global audio level
+- **Hints**: reveal a valid pair in Easy mode
+- **Reshuffle**: shuffle remaining tiles when the mode allows it
+- **Pause**: freeze the game and music
+- **Restart**: restart the current mode/run
+- **End**: finish the current continuous run
 - **Home**: return to the start screen
 
 ---
@@ -148,11 +168,11 @@ If the board has no valid move:
 
 1. Open the game in your browser
 2. Choose a **Play Type**
-3. Choose a **Mode**
-4. Click 2 identical tiles to match them
-5. A match is valid only if the tiles can be connected by a path with at most **2 turns**
-6. Clear the board before time runs out
-7. Try to earn the highest score and clear as many stages as possible
+3. Select a **Mode**
+4. Click two identical tiles to match them
+5. A pair is valid only if the tiles can be connected with a path of at most **2 turns**
+6. Clear all tiles before time runs out
+7. Aim for high combo chains, faster clears, and better leaderboard placement
 
 ---
 
@@ -161,14 +181,14 @@ If the board has no valid move:
 - **HTML5**
 - **CSS3**
 - **Vanilla JavaScript**
-- **LocalStorage** for leaderboard persistence
+- **LocalStorage** for leaderboard and sound settings
 - **GitHub Pages** for deployment
 
 ---
 
 ## Project Structure
 
-```bash
+```text
 One-Piece-Bounty-Match/
 ├── index.html
 ├── style.css
@@ -176,22 +196,50 @@ One-Piece-Bounty-Match/
 ├── README.md
 ├── image/
 └── sound/
+    ├── match.mp3
+    ├── wrong.mp3
+    ├── win.mp3
+    ├── lose.mp3
+    └── bgm/
+        ├── normal/
+        └── danger/
 ```
 
 ---
 
 ## Notes
 
-- Easy mode is designed to be more beginner-friendly, with hints first and reshuffle unlocked later
-- Insane and Impossible are designed to increase pressure through shifting board mechanics
-- Continuous mode rewards consistency across multiple cleared stages
-- Leaderboard data is stored locally in the browser using `localStorage`
+- Easy mode is intentionally beginner-friendly and gradually introduces pressure
+- Insane and Impossible rely more heavily on board movement and route disruption
+- Continuous mode rewards consistency over multiple stages
+- Leaderboard and sound preferences are stored locally in the browser
+- The game uses custom toast notifications to provide feedback without blocking gameplay
+
+---
+
+## Current Status
+
+The current version already includes:
+- custom toast notifications
+- grouped sound controls
+- persistent sound settings
+- normal and danger BGM playlists
+- cleaned-up single-SFX audio structure
 
 ---
 
 ## Future Improvements
 
-- Custom in-game toast notifications instead of browser `alert()`
 - Player name input for leaderboard entries
-- Additional animation and sound polish
-- More board themes / character sets
+- Distinct BGM per mode or per stage theme
+- Smoother BGM crossfade when switching to danger mode
+- Additional board themes and character sets
+- Extra visual effects for combos, stage clear, and danger state
+- Optional save/export for leaderboard records
+
+---
+
+## License / Asset Notes
+
+Code structure and gameplay logic are project-authored.
+Make sure any music, images, and external assets used in deployment follow the correct usage license for your public build.

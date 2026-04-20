@@ -65,7 +65,10 @@
         <div id="gameContainer" class="game-container hidden">
             <div class="top-bar">
                 <p id="score"></p>
-                <button id="soundBtn">🔊 Sound</button>
+                <div class="sound-controls">
+                    <button id="soundBtn">🔊 Sound</button>
+                    <input id="volumeSlider" type="range" min="0" max="100" value="25">
+                </div>
                 <button id="hintBtn"></button>
                 <button id="reshuffleBtn" class="hidden">🔄 Reshuffle</button>
                 <button id="pauseBtn">⏸ Pause</button>
@@ -112,6 +115,7 @@
             <p id="leaderboardRankMessage" class="leaderboard-rank-message"></p>
             <button onclick="showStartScreen()">Home</button>
         </div>
+        <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
         <script src="script.js"></script>
     </body>
 </html>
