@@ -1,0 +1,19 @@
+# Thư mục cài đặt Node.js (không cần đưa lên GitHub vì quá nặng)
+node_modules/
+backend/node_modules/
+
+# File cấu hình chứa thông tin bí mật (mật khẩu database, v.v.)
+.env
+backend/.env
+
+# File nhật ký (log)
+*.log
+npm-debug.log*
+
+# File tạm của editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store

@@ -1,245 +1,316 @@
 # One Piece: Bounty Match
 
-A browser-based **One Piece themed tile-matching game** inspired by classic Pikachu gameplay, built with **HTML, CSS, and Vanilla JavaScript**.
+Một trò chơi **One Piece** kết nối và ghép cặp (tile‑matching) trên nền web, lấy cảm hứng từ trò chơi Pikachu cổ điển. Dự án sử dụng **HTML, CSS, Vanilla JavaScript** cho phần giao diện và **Node.js + Express + MySQL** cho phần máy chủ PvP trực tuyến.
 
-## Live Demo
+## 🌐 Demo Trực Tuyến (Offline)
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-0ea5e9?style=for-the-badge&logo=github)](https://vp2802.github.io/One-Piece-Bounty-Match/)
 
-## About the Project
-
-**One Piece: Bounty Match** reimagines the classic connect-and-match format with a pirate-themed presentation, multiple difficulty modes, continuous runs, dynamic board mechanics, and a polished UI.
-
-Players clear pairs of identical tiles by connecting them with a valid path of at most **2 turns**. As difficulty increases, the board becomes larger, reshuffle access becomes more limited, and advanced movement rules such as board shifting make matches harder to predict.
-
-The game supports both **quick single-stage play** and **continuous multi-stage runs**, with score tracking, time pressure, local leaderboard persistence, and custom audio/notification systems.
+*Bản demo chỉ bao gồm chế độ chơi đơn ngoại tuyến. Để trải nghiệm PvP trực tuyến, bạn cần chạy back-end server.*
 
 ---
 
-## Core Features
+## 📖 Giới Thiệu Dự Án
 
-- **4 game modes**: Easy, Hard, Insane, Impossible
-- **2 play types**: Single Run and Continuous
-- **One Piece styled UI and board themes**
-- **Wanted Poster countdown timer**
-- **Combo-based scoring system**
-- **Hints in Easy mode**
-- **Manual reshuffle system** with per-mode limits
-- **Board shifting mechanics** in higher difficulties
-- **Pause / Resume / Restart / Home / End controls**
-- **Persistent leaderboard** with score, time, mode, and stages cleared
-- **Custom in-game toast notifications** instead of browser `alert()`
-- **Sound toggle + volume slider**
-- **Background music system** with:
-  - normal BGM playlist during regular play
-  - danger BGM playlist for the final 60 seconds
-- **Responsive layout** for smaller screens
+**One Piece: Bounty Match** tái hiện lối chơi kết nối cổ điển trong một giao diện mang chủ đề hải tặc. Trò chơi cung cấp **chế độ chơi đơn ngoại tuyến** đầy đủ và **hệ thống PvP trực tuyến** hoàn chỉnh, bao gồm ghép trận, phe phái, cấp bậc và bảng xếp hạng toàn cầu.
+
+Người chơi loại bỏ các cặp hình giống nhau bằng cách nối chúng bằng một đường đi có tối đa **2 lần rẽ**. Khi độ khó tăng, bàn chơi trở nên lớn hơn, lượt xáo trộn bị hạn chế và các cơ chế đặc biệt như dịch chuyển bàn chơi khiến trận đấu trở nên khó lường hơn.
 
 ---
 
-## Play Types
+## ✨ Tính Năng Chính
 
-### Single Run
-- Play exactly **1 stage**
-- The result screen appears immediately after win or loss
-- Best for quick score attempts
-
-### Continuous
-- Progress through stages back-to-back in the same run
-- **Run total score** accumulates across cleared stages
-- Top bar shows:
-  - **Total** = total score of the run
-  - **Stage Score** = score of the current stage only
-  - **Stage** = current stage number
-- After clearing a stage, a short stage-clear screen appears before the next stage starts automatically
-- Press **End** anytime to finish the run and save the result
-
----
-
-## Game Modes
-
-| Mode | Time | Hints | Board Size | Reshuffle | Special Rules |
-|------|------|-------|------------|-----------|---------------|
-| Easy | 15 minutes | 3 | 9 x 10 | 5 | Reshuffle only unlocks after all hints are used |
-| Hard | 12 minutes | 0 | 10 x 15 | 3 | Standard high-density board |
-| Insane | 10 minutes | 0 | 12 x 15 | 1 | Fixed random shift direction for the whole stage |
-| Impossible | 8 minutes | 0 | 15 x 16 | 0 | Board shifts in a random direction after every successful match |
+- **4 chế độ chơi:** Easy, Hard, Insane, Impossible
+- **2 cách chơi:** Single Run & Continuous
+- **Chế độ Offline** với bảng xếp hạng cục bộ
+- **Chế độ Online PvP** đầy đủ:
+  - **Hệ thống tài khoản:** Đăng ký / Đăng nhập với mật khẩu mã hóa
+  - **Hai phe phái:** Hải Tặc & Hải Quân, mỗi phe 8 cấp bậc
+  - **Loại trận đấu:** Đấu với Bot, Đấu Thường (phòng), Đấu Xếp Hạng (ghép tự động)
+  - **Hệ thống RP động:** Dựa trên Elo, xét đến chênh lệch điểm số giữa hai người chơi
+  - **Bảng xếp hạng Top 10 toàn cầu**, tìm kiếm người chơi, kết bạn & mời đấu
+  - **Theo dõi điểm số trực tiếp** với đối thủ
+- **Giao diện và bàn chơi phong cách One Piece**
+- **Đồng hồ đếm ngược dạng "Wanted Poster"**
+- **Hệ thống tính điểm theo chuỗi (combo)**
+- **Gợi ý (Hints) ở chế độ Easy**
+- **Xáo trộn (Reshuffle) thủ công** với giới hạn theo chế độ
+- **Cơ chế dịch chuyển bàn chơi** ở độ khó cao
+- **Điều khiển:** Tạm dừng / Chơi lại / Trang chính / Kết thúc
+- **Bảng xếp hạng cục bộ** (offline) và **lịch sử đấu** PvP trên máy chủ
+- **Thông báo dạng toast** tùy chỉnh
+- **Âm thanh:** Bật/tắt & chỉnh âm lượng, nhạc nền tự chuyển khi gần hết giờ
+- **Giao diện thích ứng** cho màn hình nhỏ
 
 ---
 
-## Scoring System
+## 🕹️ Cách Chơi
 
-### Match Score
-Each successful match grants:
-- **Base score**: `100`
-- **Combo bonus** based on current combo streak and difficulty
+### Single Run (Chơi Đơn & PvP)
+- Chơi chính xác **1 màn**
+- Màn kết quả hiện ngay sau khi thắng hoặc thua
+- Phù hợp để thử sức nhanh
 
-### Combo Bonus Per Level
-- **Easy**: `+10`
-- **Hard**: `+15`
-- **Insane**: `+25`
-- **Impossible**: `+35`
-
-Combo scaling is capped at the first **5 combo levels**.
-
-### Time Bonus Multiplier
-Remaining time is converted into bonus score on stage clear:
-- **Easy**: `x8`
-- **Hard**: `x12`
-- **Insane**: `x16`
-- **Impossible**: `x20`
-
-### Mode Bonus
-- **Easy**: `0`
-- **Hard**: `500`
-- **Insane**: `1200`
-- **Impossible**: `2500`
-
-### Final Stage Score
-```text
-Stage Total = Match Score + Time Bonus + Mode Bonus
-```
-
-In **Continuous** mode, only cleared stages are added into the run total.
-
-### Leaderboard Ranking Priority
-1. Higher **score**
-2. More **stages cleared**
-3. Faster **completion time**
+### Continuous (Chỉ Offline)
+- Chơi liên tiếp các màn trong cùng một lần chạy
+- **Tổng điểm** tích lũy qua các màn đã thắng
+- Nhấn **End** bất cứ lúc nào để kết thúc và lưu điểm
 
 ---
 
-## Hint and Reshuffle Rules
+## 🎮 Chế Độ Trò Chơi
 
-### Hint
-- Only available in **Easy** mode
-- Each use reveals a valid pair
-- Each hint costs **200 score**
-- When hints reach `0`, the **Hint button disappears**
-- In Easy mode, using all hints also **unlocks Reshuffle**
+| Chế độ      | Thời gian | Gợi ý | Kích thước | Reshuffle | Đặc biệt                                            |
+|-------------|-----------|-------|------------|-----------|-----------------------------------------------------|
+| Easy        | 15 phút   | 3     | 9 x 10     | 5         | Chỉ mở Reshuffle sau khi dùng hết gợi ý             |
+| Hard        | 12 phút   | 0     | 10 x 15    | 3         | Mật độ bàn chơi cao tiêu chuẩn                       |
+| Insane      | 10 phút   | 0     | 12 x 15    | 1         | Dịch chuyển bàn theo một hướng cố định trong cả màn |
+| Impossible  | 8 phút    | 0     | 15 x 16    | 0         | Dịch chuyển bàn theo hướng ngẫu nhiên sau mỗi lần nối thành công |
 
-### Reshuffle
-- **Easy**: hidden until all hints are used
-- **Hard**: available immediately
-- **Insane**: available immediately
-- **Impossible**: unavailable
-
-If no valid move exists:
-- the game attempts to reshuffle the remaining tiles
-- if repeated reshuffles still fail, the remaining board may be rebuilt to avoid deadlock
+*Trong PvP, chế độ được chọn ngẫu nhiên từ Hard, Insane, Impossible (Đấu Thường có thể có cả Easy).*
 
 ---
 
-## Audio System
+## 📊 Hệ Thống Điểm
 
-The game includes a simplified sound system and playlist-based background music.
+### Điểm Ghép Cặp
+Mỗi lần nối thành công:
+- **Điểm cơ bản:** `100`
+- **Thưởng Combo:** tùy theo chuỗi liên tiếp và độ khó
 
-### Sound Effects
-- `match.mp3`
-- `wrong.mp3`
-- `win.mp3`
-- `lose.mp3`
+| Chế độ      | Thưởng Combo mỗi cấp |
+|-------------|-----------------------|
+| Easy        | +10                   |
+| Hard        | +15                   |
+| Insane      | +25                   |
+| Impossible  | +35                   |
 
-### Background Music
-- **Normal playlist**: plays during standard gameplay
-- **Danger playlist**: automatically replaces the normal playlist when the timer reaches the last **60 seconds**
+Combo tối đa được tính ở **5 cấp**.
 
-### Volume Control
-- Sound can be toggled on/off
-- A **volume slider** lets the player control audio intensity
-- Sound settings are saved with `localStorage`
+### Nhân Thưởng Thời Gian
+Số giây còn lại được nhân với hệ số khi thắng màn:
 
----
+| Chế độ      | Hệ số |
+|-------------|-------|
+| Easy        | ×8    |
+| Hard        | ×12   |
+| Insane      | ×16   |
+| Impossible  | ×20   |
 
-## Controls
+### Thưởng Chế Độ
+| Easy       | 0     |
+| Hard       | 500   |
+| Insane     | 1200  |
+| Impossible | 2500  |
 
-- **Sound**: mute/unmute all game audio
-- **Volume Slider**: adjust global audio level
-- **Hints**: reveal a valid pair in Easy mode
-- **Reshuffle**: shuffle remaining tiles when the mode allows it
-- **Pause**: freeze the game and music
-- **Restart**: restart the current mode/run
-- **End**: finish the current continuous run
-- **Home**: return to the start screen
-
----
-
-## How to Play
-
-1. Open the game in your browser
-2. Choose a **Play Type**
-3. Select a **Mode**
-4. Click two identical tiles to match them
-5. A pair is valid only if the tiles can be connected with a path of at most **2 turns**
-6. Clear all tiles before time runs out
-7. Aim for high combo chains, faster clears, and better leaderboard placement
+### Tổng Điểm Mỗi Màn
+Tổng điểm màn = Điểm ghép cặp + Thưởng thời gian + Thưởng chế độ
 
 ---
 
-## Tech Stack
+## ⚔️ PvP Online
 
-- **HTML5**
-- **CSS3**
-- **Vanilla JavaScript**
-- **LocalStorage** for leaderboard and sound settings
-- **GitHub Pages** for deployment
+### Tài Khoản & Phe Phái
+- **Đăng Ký** yêu cầu: Tên người chơi, Mật khẩu (có quy tắc mạnh), Xác nhận mật khẩu và Chọn phe.
+- **Đăng Nhập** chỉ cần Tên và Mật khẩu.
+- Mật khẩu được băm với bcrypt, không lưu dạng thô.
+- Chọn giữa **Hải Tặc** hoặc **Hải Quân**, mỗi phe có hệ thống cấp bậc riêng.
+
+### Hệ Thống Cấp Bậc (Rank)
+| Khoảng RP | Hải Tặc                       | Hải Quân                        |
+|-----------|-------------------------------|---------------------------------|
+| < 100     | Rookie (Tân Binh)             | Recruit (Tân Binh)              |
+| 100+      | Crewmate (Thuyền Viên)       | Petty Officer (Hạ Sĩ)          |
+| 250+      | Captain (Thuyền Trưởng)      | Captain (Đại Úy)               |
+| 500+      | Super Rookie (Siêu Tân Tinh) | Major (Thiếu Tá)               |
+| 900+      | Shichibukai (Thất Vũ Hải)    | Commodore (Đề Đốc)             |
+| 1500+     | Yonko Commander (Tư Lệnh Tứ Hoàng) | Vice Admiral (Phó Đô Đốc)      |
+| 2300+     | Yonko (Tứ Hoàng)             | Admiral (Đô Đốc)               |
+| 3500+     | Pirate King (Vua Hải Tặc)    | Fleet Admiral (Thủy Sư Đô Đốc) |
+
+### Loại Trận Đấu
+- **Đấu với Bot:** Một mình đấu với AI. Không thay đổi RP.
+- **Đấu Thường (Friendly PvP):** Tạo phòng hoặc tham gia bằng mã phòng, hoặc ghép ngẫu nhiên. Không thay đổi RP.
+- **Đấu Xếp Hạng (Ranked PvP):** Chỉ ghép ngẫu nhiên. Thay đổi Điểm Xếp Hạng (RP).
+
+### Cách Tính RP Động
+RP thay đổi dựa trên thuật toán kiểu Elo, xét đến chênh lệch điểm số và đẳng cấp hiện tại:
+
+Điểm kỳ vọng = 1 / (1 + 10^((RP_đối_thủ - RP_bạn) / 400))
+Thay đổi RP = K * (Điểm thực tế - Điểm kỳ vọng)
+
+- **Hệ số K** phụ thuộc vào cấp bậc hiện tại (cao hơn ở bậc thấp, thấp hơn ở bậc cao).
+- Điểm thực tế: 1 nếu thắng, 0.5 nếu hòa, 0 nếu thua.
+- Thay đổi được giới hạn trong khoảng **-50** đến **+50**.
+- Thắng đối thủ mạnh hơn được nhiều điểm hơn; thua đối thủ yếu hơn mất nhiều điểm hơn.
+
+### Sảnh Chờ PvP
+- Xem hồ sơ, cấp bậc và chỉ số của bản thân.
+- Bảng **Top 10 Xếp Hạng** toàn cầu.
+- **Tìm kiếm người chơi** để xem hồ sơ và kết bạn.
+- **Danh sách bạn bè**, gửi/nhận lời mời kết bạn và mời đấu (chỉ đấu thường).
+- Cập nhật thời gian thực lời mời kết bạn và mời đấu.
 
 ---
 
-## Project Structure
+## 💡 Gợi Ý & Xáo Trộn
 
-```text
-One-Piece-Bounty-Match/
-├── index.html
-├── style.css
-├── script.js
+### Gợi Ý (Hint)
+- Chỉ có ở chế độ **Easy**
+- Mỗi lần dùng hiện một cặp có thể nối
+- Mỗi lần dùng tốn **200 điểm**
+- Khi hết gợi ý, nút **Hint biến mất**
+- Ở chế độ Easy, dùng hết gợi ý sẽ **mở khóa Reshuffle**
+
+### Xáo Trộn (Reshuffle)
+- **Easy:** ẩn cho đến khi dùng hết gợi ý
+- **Hard:** có sẵn ngay từ đầu
+- **Insane:** có sẵn ngay từ đầu
+- **Impossible:** không có sẵn
+
+Nếu không còn nước đi hợp lệ:
+- Trò chơi cố gắng xáo trộn các ô còn lại
+- Nếu sau nhiều lần thử vẫn không có nước đi, bàn chơi có thể được xây dựng lại một phần để tránh bế tắc
+
+---
+
+## 🔊 Âm Thanh
+
+- **Hiệu ứng:** match, wrong, win, lose
+- **Nhạc nền:** Danh sách phát thường khi chơi; tự động chuyển sang danh sách "Nguy hiểm" trong **60 giây cuối**
+- **Điều khiển âm lượng:** Nút tắt/bật và thanh trượt, lưu trong localStorage
+
+---
+
+## 🎮 Điều Khiển
+
+| Nút              | Hành động                              |
+|------------------|----------------------------------------|
+| Sound / 🔊      | Tắt/bật toàn bộ âm thanh               |
+| Thanh Âm Lượng   | Chỉnh âm lượng toàn cục                |
+| Hints            | Hiện một cặp có thể nối (chỉ Easy)     |
+| Reshuffle        | Xáo trộn các ô còn lại (nếu được phép)|
+| Pause            | Đóng băng trò chơi và nhạc             |
+| Restart          | Chơi lại chế độ/lượt chơi hiện tại     |
+| End              | Kết thúc lượt Continuous hiện tại       |
+| Home / Quit      | Quay về màn hình chính hoặc sảnh PvP   |
+
+---
+
+## 🛠️ Công Nghệ Sử Dụng
+
+**Frontend**
+- HTML5, CSS3 (biến tùy chỉnh, responsive)
+- JavaScript thuần (ES Modules)
+- LocalStorage cho bảng xếp hạng và cài đặt âm thanh
+- GitHub Pages để lưu trữ tĩnh
+
+**Backend**
+- Node.js
+- Express.js
+- MySQL (qua `mysql2`)
+- bcryptjs để băm mật khẩu
+- Lưu trữ trên bộ nhớ (Map) cho hàng đợi và phòng đang hoạt động
+
+---
+
+## 📁 Cấu Trúc Dự Án
+
+OnePieceBountyMatch/
+├── index.html # File HTML chính (frontend)
+├── style.css # Style toàn cục
 ├── README.md
-├── image/
-└── sound/
-    ├── match.mp3
-    ├── wrong.mp3
-    ├── win.mp3
-    ├── lose.mp3
-    └── bgm/
-        ├── normal/
-        └── danger/
+├── frontend/
+│ ├── css/
+│ │ ├── components/
+│ │ ├── game/
+│ │ ├── screens/
+│ │ ├── base.css
+│ │ └── responsive.css
+│ ├── js/
+│ │ ├── game/ # Logic trò chơi offline
+│ │ ├── pvp/ # Logic PvP (auth, room, matchmaking...)
+│ │ ├── api.js # Gọi API đến backend
+│ │ ├── audio.js # Quản lý âm thanh
+│ │ ├── dom.js # Tham chiếu DOM
+│ │ ├── main.js # Điểm vào & gán sự kiện
+│ │ ├── state.js # Trạng thái toàn cục
+│ │ └── ui.js # Tiện ích UI & quản lý màn hình
+│ └── index.html # (nếu phục vụ riêng)
+├── backend/
+│ ├── routes/ # Định nghĩa các route Express
+│ ├── services/ # Logic nghiệp vụ & truy vấn DB
+│ ├── stores/ # Lưu trữ trên bộ nhớ (hàng đợi, phòng)
+│ ├── utils/ # Hàm tiện ích
+│ ├── app.js # Thiết lập Express app
+│ ├── db.js # Kết nối MySQL
+│ ├── server.js # Điểm vào máy chủ
+│ ├── rank.js # Tính toán cấp bậc
+│ └── .env # Biến môi trường
+├── image/ # Hình ảnh tile & background board
+└── sound/ # SFX và BGM
+
+---
+
+## ⚙️ Cài Đặt & Khởi Chạy (PvP Mode)
+
+Để trải nghiệm đầy đủ tính năng PvP và lưu trữ dữ liệu, hãy thực hiện theo các bước sau:
+
+### 1. Tải mã nguồn
+```bash
+git clone https://github.com/VP2802/One-Piece-Bounty-Match.git
+cd One-Piece-Bounty-Match
 ```
 
+### 2. Cấu hình Backend
+Di chuyển vào thư mục backend và cài đặt các thư viện cần thiết:
+```bash
+cd backend
+npm install
+```
+
+### 3. Thiết lập Cơ sở dữ liệu
+* Cài đặt **MySQL** trên máy của bạn.
+* Tạo một database mới (ví dụ: `one_piece_game`).
+* Chạy các lệnh SQL (tìm trong thư mục backend hoặc file `.sql` đi kèm) để khởi tạo cấu trúc bảng.
+
+### 4. Cấu hình biến môi trường
+Tạo file `.env` nằm trong thư mục `backend/` với nội dung sau:
+```env
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=mật_khẩu_của_bạn
+DB_NAME=ten_database
+DB_PORT=3306
+PORT=3000
+```
+
+### 5. Khởi chạy Server
+```bash
+npm run dev
+```
+
+### 6. Trải nghiệm Game
+Mở file `index.html` (ở thư mục gốc hoặc frontend) bằng trình duyệt. 
+> **Lưu ý:** Đảm bảo API base URL trong file `state.js` đã trỏ đúng về `http://localhost:3000` (mặc định đã được thiết lập).
+
 ---
 
-## Notes
-
-- Easy mode is intentionally beginner-friendly and gradually introduces pressure
-- Insane and Impossible rely more heavily on board movement and route disruption
-- Continuous mode rewards consistency over multiple stages
-- Leaderboard and sound preferences are stored locally in the browser
-- The game uses custom toast notifications to provide feedback without blocking gameplay
+## 📝 Ghi Chú
+* **Độ khó:** Chế độ **Easy** dành cho người mới; **Insane** và **Impossible** đòi hỏi kỹ năng di chuyển bàn cờ thượng thừa.
+* **Continuous Mode:** Thử thách sự ổn định của bạn qua nhiều màn chơi liên tiếp.
+* **Lưu trữ:** Âm thanh và bảng xếp hạng offline được quản lý qua `localStorage`.
+* **Cơ chế PvP:** Hiện tại đang sử dụng cơ chế **polling** phía máy chủ; dự kiến nâng cấp lên WebSocket trong tương lai.
 
 ---
 
-## Current Status
-
-The current version already includes:
-- custom toast notifications
-- grouped sound controls
-- persistent sound settings
-- normal and danger BGM playlists
-- cleaned-up single-SFX audio structure
-
----
-
-## Future Improvements
-
-- Player name input for leaderboard entries
-- Distinct BGM per mode or per stage theme
-- Smoother BGM crossfade when switching to danger mode
-- Additional board themes and character sets
-- Extra visual effects for combos, stage clear, and danger state
-- Optional save/export for leaderboard records
+## 🔮 Hướng Phát Triển
+- [ ] **Real-time:** Sử dụng WebSocket để đồng bộ PvP tức thời.
+- [ ] **Âm nhạc:** Thêm nhạc nền riêng biệt cho từng chế độ chơi và chủ đề màn.
+- [ ] **Hiệu ứng âm thanh:** Chuyển đổi nhạc mượt mà (transition) khi rơi vào trạng thái nguy hiểm.
+- [ ] **Visual:** Bổ sung hiệu ứng hình ảnh cho các chuỗi combo, chiến thắng và cảnh báo nguy hiểm.
+- [ ] **Tùy biến:** Thêm nhiều bộ skin nhân vật và chủ đề bàn chơi (Themes).
+- [ ] **Dữ liệu:** Hỗ trợ xuất/nhập (Export/Import) dữ liệu bảng xếp hạng.
+- [ ] **Replay:** Hệ thống xem lại các trận đấu PvP đỉnh cao.
 
 ---
-
-## License / Asset Notes
-
-Code structure and gameplay logic are project-authored.
-Make sure any music, images, and external assets used in deployment follow the correct usage license for your public build.
