@@ -1,0 +1,135 @@
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1120px){
+    .layout-two-cols{
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 860px){
+    body{
+        padding: 14px;
+    }
+
+    .screen-center{
+        min-height: calc(100vh - 28px);
+    }
+
+    .panel{
+        border-radius: 24px;
+    }
+
+    #modeSelectScreen .hero-panel,
+    #authScreen .auth-panel,
+    #pvpLobbyScreen .pvp-profile-panel,
+    #pvpLobbyScreen .top10-panel,
+    #startScreen .start-panel,
+    #startScreen .leaderboard-panel,
+    #endScreen .end-panel{
+        padding: 24px 18px 28px;
+    }
+
+    .entry-mode-grid,
+    .mode-grid,
+    .faction-grid,
+    .rank-columns{
+        grid-template-columns: 1fr;
+    }
+
+    .game-container{
+        padding: 24px 14px 26px;
+        border-radius: 24px;
+    }
+
+    .game-topbar{
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .topbar-left,
+    .topbar-right{
+        justify-content: center;
+    }
+
+    .game-main{
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .time-column{
+        min-width: 112px;
+    }
+
+    .time-track{
+        width: 66px;
+        height: 320px;
+        padding-top: 34px;
+    }
+
+    .time-column-title{
+        font-size: 17px;
+        letter-spacing: 2px;
+        padding: 8px 16px;
+    }
+
+    .time-bar-value{
+        min-width: 84px;
+        font-size: 16px;
+    }
+
+    .board-wrapper{
+        width: 100%;
+        padding: 12px;
+        overflow-x: auto;
+    }
+
+    .ranking-table th,
+    .ranking-table td{
+        padding: 12px 8px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 700px){
+    .toast-container{
+        left: 14px;
+        right: 14px;
+        top: 14px;
+    }
+
+    .toast{
+        min-width: unset;
+        max-width: unset;
+        width: 100%;
+    }
+}
+
+@media (max-width: 520px){
+    .auth-actions,
+    .pvp-lobby-actions,
+    .play-type-actions,
+    .end-actions,
+    .pause-actions{
+        flex-direction: column;
+    }
+
+    .primary-btn,
+    .secondary-btn,
+    .ghost-btn{
+        width: 100%;
+    }
+
+    .topbar-left button,
+    .topbar-right button,
+    #score,
+    .volume-wrap{
+        width: 100%;
+        justify-content: center;
+    }
+
+    .volume-wrap{
+        flex-wrap: wrap;
+    }
+}

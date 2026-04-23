@@ -1,0 +1,215 @@
+/* =========================================================
+   ROOT / GLOBAL
+   ========================================================= */
+
+:root{
+    --ocean-deep: #082441;
+    --ocean-mid: #11406b;
+    --ocean-surface: #1b5b91;
+    --ocean-bright: #2b84c6;
+    --sky-blue: #63cfff;
+    --seafoam: #95f0ff;
+    --ice-blue: #f3fbff;
+    --mist: #d7e9f6;
+    --gold: #ffc94d;
+    --gold-soft: #ffe8a3;
+    --sunset: #ff9b6b;
+    --leaf: #46d98f;
+    --danger: #ff5d5d;
+    --ink: #f6fbff;
+    --muted: #d5e3ee;
+    --panel: rgba(10, 42, 72, 0.84);
+    --panel-strong: rgba(8, 32, 56, 0.92);
+    --panel-soft: rgba(22, 74, 120, 0.74);
+    --line: rgba(255, 255, 255, 0.2);
+    --line-strong: rgba(255, 255, 255, 0.34);
+    --shadow-lg: 0 26px 54px rgba(4, 20, 38, 0.28);
+    --shadow-md: 0 16px 34px rgba(6, 22, 44, 0.2);
+    --shadow-sm: 0 8px 18px rgba(6, 22, 44, 0.14);
+    --radius-xl: 28px;
+    --radius-lg: 22px;
+    --radius-md: 16px;
+    --radius-sm: 12px;
+    --font-display: "Cinzel", Georgia, "Times New Roman", serif;
+    --font-ui: "Be Vietnam Pro", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+*{
+    box-sizing: border-box;
+}
+
+html{
+    scroll-behavior: smooth;
+}
+
+body{
+    margin: 0;
+    min-height: 100vh;
+    padding: 22px;
+    color: var(--ink);
+    font-family: var(--font-ui);
+    background:
+        radial-gradient(circle at 50% -12%, rgba(255, 214, 102, 0.26), transparent 22%),
+        radial-gradient(circle at 14% 10%, rgba(149, 240, 255, 0.18), transparent 16%),
+        radial-gradient(circle at 86% 14%, rgba(99, 207, 255, 0.2), transparent 18%),
+        linear-gradient(180deg, #49a6dd 0%, #2b7ec1 26%, #175489 58%, #0d345b 100%);
+    position: relative;
+    overflow-x: hidden;
+}
+
+body::before,
+body::after{
+    content: "";
+    position: fixed;
+    inset: auto;
+    pointer-events: none;
+    z-index: 0;
+}
+
+body::before{
+    width: 580px;
+    height: 580px;
+    left: -170px;
+    top: -170px;
+    background: radial-gradient(circle, rgba(77, 184, 255, 0.14), transparent 64%);
+}
+
+body::after{
+    width: 760px;
+    height: 760px;
+    right: -230px;
+    bottom: -280px;
+    background: radial-gradient(circle, rgba(126, 230, 255, 0.12), transparent 66%);
+}
+
+.hidden{
+    display: none !important;
+}
+
+.app-shell{
+    position: relative;
+    z-index: 1;
+    width: min(1380px, 100%);
+    margin: 0 auto;
+}
+
+.hero-title,
+.panel-header h2,
+#endScreen h2,
+.time-column-title,
+.play-type-card h3,
+.rank-preview h3,
+.rank-column h4{
+    font-family: var(--font-display);
+}
+
+.screen{
+    width: 100%;
+}
+
+.screen-center{
+    min-height: calc(100vh - 44px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.layout-two-cols{
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(360px, 0.9fr);
+    gap: 22px;
+    align-items: start;
+}
+
+.panel{
+    position: relative;
+    border: 1px solid var(--line);
+    border-radius: 34px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    backdrop-filter: blur(12px);
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01)),
+        linear-gradient(180deg, rgba(9, 30, 52, 0.96), rgba(2, 8, 18, 0.985));
+}
+
+.panel::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 50% -8%, rgba(126, 230, 255, 0.08), transparent 28%),
+        radial-gradient(circle at 10% 24%, rgba(77, 184, 255, 0.07), transparent 20%),
+        radial-gradient(circle at 90% 24%, rgba(126, 230, 255, 0.05), transparent 20%);
+}
+
+.panel-header{
+    position: relative;
+    z-index: 1;
+    margin-bottom: 18px;
+}
+
+.panel-kicker,
+.hero-badge{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 22px;
+    border-radius: 999px;
+    border: 1px solid rgba(120, 214, 255, 0.22);
+    background:
+        linear-gradient(180deg, rgba(29, 70, 106, 0.88), rgba(14, 39, 61, 0.92));
+    color: #d7efff;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    box-shadow: var(--shadow-sm);
+}
+
+.hero-title,
+.panel-header h2{
+    position: relative;
+    z-index: 1;
+    margin: 12px 0 0;
+    line-height: 1.05;
+    letter-spacing: 1px;
+    color: var(--ice-blue);
+    text-shadow:
+        0 0 16px rgba(77, 184, 255, 0.28),
+        0 0 34px rgba(126, 230, 255, 0.10);
+}
+
+.hero-title{
+    font-size: clamp(54px, 6.4vw, 88px);
+}
+
+.panel-header h2{
+    font-size: clamp(32px, 4vw, 50px);
+}
+
+.hero-subtitle,
+.play-type-desc,
+.panel-note,
+.pvp-profile-meta,
+#bonusMessage,
+#modeBonusMessage,
+#totalScoreMessage,
+#leaderboardRankMessage{
+    position: relative;
+    z-index: 1;
+    color: var(--muted);
+    line-height: 1.55;
+}
+
+button,
+input,
+.text-input,
+.field-label,
+.entry-card-desc,
+.mode-info,
+.play-type-desc{
+    font: inherit;
+    font-family: var(--font-ui);
+}

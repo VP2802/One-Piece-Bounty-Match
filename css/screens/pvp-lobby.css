@@ -1,0 +1,176 @@
+/* =========================================================
+    PVP LOBBY SCREEN
+   ========================================================= */   
+
+#pvpLobbyScreen .pvp-profile-panel,
+#pvpLobbyScreen .top10-panel{
+    padding: 34px 31px;
+}
+
+.pvp-profile-meta{
+    margin-top: 4px;
+    margin-bottom: 14px;
+    font-size: 17px;
+    font-family: var(--font-ui);
+    line-height: 1.75;
+    letter-spacing: 0;
+}
+
+.panel-note{
+    font-family: var(--font-ui);
+    line-height: 1.7;
+    letter-spacing: 0;
+}
+
+.rank-preview{
+    position: relative;
+    z-index: 1;
+    font-family: var(--font-ui);
+    margin-top: 22px;
+    padding: 22px 20px;
+    border-radius: 22px;
+    border: 1px solid rgba(255,255,255,0.10);
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015)),
+        rgba(6, 21, 36, 0.64);
+    box-shadow: var(--shadow-sm);
+}
+
+#pvpRoomCard{
+    margin-top: 18px;
+}
+
+#roomStatusText{
+    margin-top: 8px;
+    min-height: 48px;
+}
+
+.rank-preview h3,
+.rank-column h4{
+    margin-top: 0;
+    color: var(--gold-soft);
+}
+
+.rank-columns{
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.rank-column ul{
+    margin: 0;
+    padding-left: 22px;
+    color: var(--muted);
+    line-height: 1.9;
+    font-family: var(--font-ui);
+    letter-spacing: 0;
+}
+
+.rank-column li{
+    font-weight: 500;
+}
+
+.table-wrap{
+    position: relative;
+    z-index: 1;
+    overflow-x: auto;
+}
+
+.ranking-table{
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    border-radius: 20px;
+    border: 1px solid rgba(120, 214, 255, 0.18);
+    background: linear-gradient(180deg, rgba(2, 12, 24, 0.98), rgba(1, 7, 15, 0.98));
+    font-family: var(--font-ui);
+}
+
+.ranking-table th,
+.ranking-table td{
+    padding: 14px 12px;
+    text-align: center;
+    font-size: 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    white-space: nowrap;
+    font-family: var(--font-ui);
+    line-height: 1.5;
+    letter-spacing: 0;
+}
+
+.ranking-table th{
+    background: linear-gradient(180deg, rgba(8, 62, 103, 0.98), rgba(5, 34, 58, 0.98));
+    color: var(--seafoam);
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-family: var(--font-display);
+}
+
+.ranking-table tbody tr:nth-child(even){
+    background: rgba(255,255,255,0.03);
+}
+
+.ranking-table tbody tr:hover{
+    background: rgba(77, 184, 255, 0.08);
+}
+
+.ranking-table tbody tr:last-child td{
+    border-bottom: none;
+}
+
+/* =========================================================
+   PLAYER SEARCH PANEL
+   ========================================================= */
+
+.player-search-panel{
+    margin-top: 22px;
+    padding: 34px 31px;
+}
+
+.player-search-toolbar{
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.player-search-toolbar .text-input{
+    flex: 1;
+}
+
+.player-search-actions{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+}
+
+.player-search-actions .ghost-btn,
+.player-search-actions .secondary-btn{
+    padding: 10px 14px;
+    min-width: 90px;
+}
+
+.friends-panel{
+    margin-top: 22px;
+    padding: 34px 31px;
+}
+
+/* =========================================================
+   RANKED ROOM SECTION
+   ========================================================= */
+
+.ranked-room {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 25px;
+  padding: 10px 0;
+}
+
+#rankedRandomMatchBtn {
+  margin-bottom: 8px;
+}

@@ -1,0 +1,82 @@
+/* =========================================================
+   END SCREEN
+   ========================================================= */
+
+#endScreen .end-panel{
+    width: min(1180px, 100%);
+    min-height: 78vh;
+    padding: 42px 40px 46px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#endScreen h2{
+    margin: 0 0 8px;
+    font-size: clamp(40px, 5.2vw, 68px);
+    line-height: 1.08;
+    color: var(--gold-soft);
+    text-shadow: 0 0 18px rgba(251, 191, 36, 0.28);
+}
+
+#bonusMessage{
+    margin-top: 16px;
+    font-size: clamp(24px, 3vw, 34px);
+    font-weight: 700;
+    color: #dbeafe;
+    text-shadow: 0 0 10px rgba(103, 232, 249, 0.2);
+}
+
+#modeBonusMessage{
+    margin-top: 8px;
+    font-size: clamp(22px, 2.8vw, 32px);
+    font-weight: 700;
+    color: #c4b5fd;
+    text-shadow: 0 0 10px rgba(196, 181, 253, 0.22);
+}
+
+#totalScoreMessage{
+    margin-top: 6px;
+    font-size: clamp(28px, 3.4vw, 40px);
+    font-weight: 800;
+    color: #86efac;
+    text-shadow: 0 0 12px rgba(34, 197, 94, 0.28);
+}
+
+#leaderboardRankMessage{
+    margin-top: 2px;
+    font-size: clamp(20px, 2.6vw, 28px);
+    font-weight: 700;
+    color: #facc15;
+    text-shadow: 0 0 10px rgba(250, 204, 21, 0.28);
+}
+
+.win-flash{
+    animation: winFlash 0.6s ease-in-out 2;
+}
+
+@keyframes winFlash{
+    0%{ background-color: rgba(4, 17, 31, 0.96); }
+    50%{ background-color: rgba(255, 255, 255, 0.12); }
+    100%{ background-color: rgba(4, 17, 31, 0.96); }
+}
+
+.win-pop{
+    animation: winPop 0.6s ease;
+}
+
+@keyframes winPop{
+    0%{
+        transform: scale(0.72);
+        opacity: 0;
+    }
+    50%{
+        transform: scale(1.12);
+        opacity: 1;
+    }
+    100%{
+        transform: scale(1);
+    }
+}

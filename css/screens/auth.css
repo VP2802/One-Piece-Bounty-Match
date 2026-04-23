@@ -1,0 +1,211 @@
+/* =========================================================
+   AUTH SCREEN
+   ========================================================= */
+
+#authScreen .auth-panel{
+    width: min(912px, 100%);
+    padding: 43px 41px 48px;
+}
+
+.auth-form{
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 18px;
+}
+
+.field-group{
+    display: grid;
+    gap: 12px;
+}
+
+.field-label{
+    color: var(--gold-soft);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.text-input{
+    width: 100%;
+    padding: 15px 16px;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.05);
+    color: var(--ink);
+    outline: none;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+}
+
+.text-input:focus{
+    border-color: rgba(103, 232, 249, 0.48);
+    box-shadow:
+        0 0 0 3px rgba(103, 232, 249, 0.12),
+        inset 0 1px 0 rgba(255,255,255,0.04);
+}
+
+.faction-grid{
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.faction-card{
+    padding: 18px;
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02)),
+        rgba(9, 28, 48, 0.66);
+    color: var(--ink);
+    text-align: left;
+    cursor: pointer;
+    transition: 0.22s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.faction-card:hover{
+    transform: translateY(-2px);
+    filter: brightness(1.04);
+}
+
+.faction-card.active{
+    border-color: rgba(251, 191, 36, 0.48);
+    box-shadow:
+        0 0 0 3px rgba(251, 191, 36, 0.16),
+        0 10px 22px rgba(0,0,0,0.24);
+    background:
+        linear-gradient(180deg, rgba(251, 191, 36, 0.10), rgba(255,255,255,0.02)),
+        rgba(9, 28, 48, 0.82);
+}
+
+.faction-title{
+    display: block;
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 6px;
+}
+
+.faction-subtitle{
+    color: var(--muted);
+    font-size: 15px;
+}
+
+.auth-actions,
+.pvp-lobby-actions,
+.play-type-actions,
+.end-actions,
+.pause-actions{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+/* =========================================================
+   AUTH SCREEN – TAB SELECTION & SUBMIT BUTTON
+   ========================================================= */
+
+.auth-tabs {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+
+#authSubmitBtn {
+  width: 100%;
+  margin-top: 8px;
+  padding: 16px 24px;
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-radius: 18px;
+  border: 1px solid rgba(251, 191, 36, 0.48);
+  background: linear-gradient(180deg, rgba(251, 191, 36, 0.10), rgba(255,255,255,0.02)),
+              rgba(9, 28, 48, 0.82);
+  color: var(--gold-soft);
+  cursor: pointer;
+  transition: all 0.22s ease;
+  box-shadow: 0 10px 22px rgba(0,0,0,0.24);
+}
+
+#authSubmitBtn:hover {
+  border-color: var(--gold-soft);
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.30);
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+}
+
+#authSubmitBtn:active {
+  transform: translateY(1px);
+  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.18);
+}
+
+#authBackToTabsBtn {
+  margin-top: 14px;
+  width: 100%;
+  padding: 12px;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 16px;
+  letter-spacing: 0.025em;
+  transition: all 0.22s ease;
+  cursor: pointer;
+}
+
+#authBackToTabsBtn:hover {
+  color: var(--seafoam);
+  border-color: rgba(103, 232, 249, 0.4);
+  background: rgba(103, 232, 249, 0.06);
+}
+
+.rule-item {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  margin-bottom: 4px;
+  transition: color 0.2s;
+}
+.rule-item.pass { color: #4ade80; }
+.rule-item.fail { color: var(--muted); }
+
+#factionGroup .field-label {
+    display: block;
+    margin-bottom: 10px !important;
+}
+
+.password-wrap {
+  position: relative;
+}
+.password-wrap .text-input {
+  padding-right: 48px;
+}
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px 8px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+.toggle-password:hover { color: var(--gold-soft); }
+
+.confirm-match {
+  font-size: 14px;
+  margin-top: 4px;
+  font-weight: 600;
+}
+.confirm-match.match { color: #4ade80; }
+.confirm-match.no-match { color: #f87171; }
