@@ -3,7 +3,7 @@ name: Deploy frontend to GitHub Pages
 on:
   push:
     branches:
-      - main  # hoặc master, tùy nhánh của bạn
+      - main
 
 jobs:
   deploy:
@@ -14,9 +14,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Move frontend files to root
+        run: |
+          cp -r frontend/* .
+          rm -rf frontend
+
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./frontend
+          publish_dir: .
           publish_branch: gh-pages
