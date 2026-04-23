@@ -101,7 +101,7 @@ export function renderBoard() {
         cell.classList.add("removed");
       } else {
         const img = document.createElement("img");
-        img.src = assetUrl(`../../../image/${state.board[row][col]}`);
+        img.src = assetUrl(`../../image/${state.board[row][col]}`);
         img.style.width = "100%";
         img.style.height = "100%";
         img.style.objectFit = "contain";

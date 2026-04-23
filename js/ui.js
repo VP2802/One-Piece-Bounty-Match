@@ -192,10 +192,10 @@ export function updateBoardBackground() {
   if (!dom.boardElement) return;
 
   const backgroundMap = {
-    easy: assetUrl("../../image/board_easy.jpg"),
-    hard: assetUrl("../../image/board_hard.jpg"),
-    insane: assetUrl("../../image/board_insane.jpg"),
-    impossible: assetUrl("../../image/board_impossible.jpg")
+    easy: assetUrl("../image/board_easy.jpg"),
+    hard: assetUrl("../image/board_hard.jpg"),
+    insane: assetUrl("../image/board_insane.jpg"),
+    impossible: assetUrl("../image/board_impossible.jpg")
   };
 
   const background = backgroundMap[state.currentModeName];
