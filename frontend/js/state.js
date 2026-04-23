@@ -2,7 +2,7 @@ export const constants = {
   LEADERBOARD_KEY: "onepiece_leaderboard",
   SOUND_SETTINGS_KEY: "onepiece_sound_settings",
   DEFAULT_MASTER_VOLUME: 0.25,
-  API_BASE_URL: "http://localhost:3000"
+  API_BASE_URL: "https://one-piece-bounty-match-production.up.railway.app"
 };
 
 export const BOARD_SYMBOLS = [
