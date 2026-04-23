@@ -1,0 +1,482 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>One Piece Bounty Match</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="app-shell">
+        <!-- TOAST -->
+        <div id="toastContainer" class="toast-container"></div>
+
+        <!-- MODE SELECT SCREEN -->
+        <section id="modeSelectScreen" class="screen screen-center">
+            <div class="panel hero-panel">
+                <div class="hero-badge">Grand Line Entry</div>
+                <h1 class="hero-title">One Piece Bounty Match</h1>
+                <p class="hero-subtitle">
+                    Choose your adventure. Play offline for a local run, or enter PvP to build rank and conquer the seas.
+                </p>
+
+                <div class="entry-mode-grid">
+                    <button id="offlineEntryBtn" class="entry-card entry-card-offline">
+                        <span class="entry-card-label">Offline</span>
+                        <span class="entry-card-title">Solo Adventure</span>
+                        <span class="entry-card-desc">
+                            Play instantly with the classic local experience.
+                        </span>
+                    </button>
+
+                    <button id="pvpEntryBtn" class="entry-card entry-card-pvp">
+                        <span class="entry-card-label">PvP</span>
+                        <span class="entry-card-title">Competitive Seas</span>
+                        <span class="entry-card-desc">
+                            Sign in, choose your faction, and climb the global ranking ladder.
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- AUTH SCREEN -->
+        <section id="authScreen" class="screen screen-center hidden">
+            <div class="panel auth-panel">
+                <div class="panel-header">
+                    <span class="panel-kicker">PvP Access</span>
+                    <h2 id="authTitle">PvP Sign In</h2>
+                </div>
+
+                <div class="auth-form">
+                    <label class="field-label" for="authPlayerNameInput">Player Name</label>
+                    <input
+                        id="authPlayerNameInput"
+                        class="text-input"
+                        type="text"
+                        maxlength="30"
+                        placeholder="Enter your pirate or marine name"
+                    />
+
+                    <div class="field-group">
+                        <span class="field-label">Choose Your Faction</span>
+                        <div class="faction-grid">
+                            <button id="pirateFactionBtn" type="button" class="faction-card active">
+                                <span class="faction-title">Pirate</span>
+                                <span class="faction-subtitle">Rookie → Pirate King</span>
+                            </button>
+
+                            <button id="marineFactionBtn" type="button" class="faction-card">
+                                <span class="faction-title">Marine</span>
+                                <span class="faction-subtitle">Recruit → Fleet Admiral</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="auth-actions">
+                        <button id="signUpBtn" class="primary-btn">Sign Up</button>
+                        <button id="signInBtn" class="secondary-btn">Sign In</button>
+                    </div>
+
+                    <button id="authBackBtn" class="ghost-btn">← Back</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- PVP LOBBY SCREEN -->
+        <section id="pvpLobbyScreen" class="screen hidden">
+            <div class="screen-top-actions">
+                <button id="pvpLobbyBackBtn" class="ghost-btn">← Back to Mode Select</button>
+            </div>
+
+            <div class="layout-two-cols">
+                <div class="panel pvp-profile-panel">
+                    <div class="panel-header">
+                        <span class="panel-kicker">PvP Lobby</span>
+                        <h2 id="pvpWelcomeText">Player • faction</h2>
+                    </div>
+
+                    <p id="pvpProfileText" class="pvp-profile-meta">
+                        Rank • Ranking Points
+                    </p>
+
+                    <div class="pvp-profile-extra-actions">
+                        <button id="myProfileHistoryBtn" class="ghost-btn">My Profile & History</button>
+                    </div>
+
+                    <div class="panel-note">
+                        Random mode • single-run style • higher score wins.
+                    </div>
+
+                    <div class="pvp-lobby-actions">
+                        <button id="practiceBotBtn" class="ghost-btn">Practice with Bot</button>
+                        <button id="friendlyPvpBtn" class="secondary-btn">Friendly PvP Match</button>
+                        <button id="rankedPvpBtn" class="primary-btn">Ranked PvP Match</button>
+                    </div>
+
+                    <div id="pvpRoomCard" class="rank-preview hidden">
+                        <h3 id="pvpRoomTitle">Friendly Room</h3>
+
+                        <div class="auth-form">
+                            <div class="auth-actions">
+                                <button id="createRoomBtn" class="primary-btn">Create Room</button>
+                                <button id="joinRoomBtn" class="secondary-btn">Join Room</button>
+                                <button id="randomFriendlyMatchBtn" class="primary-btn">Random Match</button>
+                                <button id="cancelRandomFriendlyMatchBtn" class="ghost-btn hidden">Cancel Search</button>
+                            </div>
+
+                            <label class="field-label" for="roomCodeInput">Room Code</label>
+                            <input
+                                id="roomCodeInput"
+                                class="text-input"
+                                type="text"
+                                maxlength="12"
+                                placeholder="Enter room code to join"
+                            />
+
+                            <div id="roomStatusText" class="panel-note">
+                                Create a room or join an existing one.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ranked-room">
+                        <button id="rankedCreateRoomBtn" class="ghost-btn hidden">Create Room</button>
+                        <button id="rankedJoinRoomBtn" class="ghost-btn hidden">Join Room</button>
+                        <button id="rankedRandomMatchBtn" class="primary-btn">Random Match</button>
+                        <div class="room-code hidden">
+                            <label for="rankedRoomCode">ROOM CODE</label>
+                            <input type="text" id="rankedRoomCode" placeholder="Enter room code to join" class="hidden" />
+                        </div>
+                    </div>
+
+                    <div class="rank-preview">
+                        <h3>Rank System</h3>
+                        <div class="rank-columns">
+                            <div class="rank-column">
+                                <h4>Pirate</h4>
+                                <ul>
+                                    <li>Rookie (Tân Binh) — &lt;100 RP</li>
+                                    <li>Crewmate (Thuyền Viên) — 100+ RP</li>
+                                    <li>Captain (Thuyền Trưởng) — 250+ RP</li>
+                                    <li>Super Rookie (Siêu Tân Tinh) — 500+ RP</li>
+                                    <li>Shichibukai (Thất Vũ Hải) — 900+ RP</li>
+                                    <li>Yonko Commander (Tư Lệnh Tứ Hoàng) — 1500+ RP</li>
+                                    <li>Yonko (Tứ Hoàng) — 2300+ RP</li>
+                                    <li>Pirate King (Vua Hải Tặc) — 3500+ RP</li>
+                                </ul>
+                            </div>
+
+                            <div class="rank-column">
+                                <h4>Marine</h4>
+                                <ul>
+                                    <li>Recruit (Tân Binh) — &lt;100 RP</li>
+                                    <li>Petty Officer (Hạ Sĩ) — 100+ RP</li>
+                                    <li>Captain (Đại Úy) — 250+ RP</li>
+                                    <li>Major (Thiếu Tá) — 500+ RP</li>
+                                    <li>Commodore (Đề Đốc) — 900+ RP</li>
+                                    <li>Vice Admiral (Phó Đô Đốc) — 1500+ RP</li>
+                                    <li>Admiral (Đô Đốc) — 2300+ RP</li>
+                                    <li>Fleet Admiral (Thủy Sư Đô Đốc) — 3500+ RP</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel top10-panel">
+                    <div class="panel-header">
+                        <span class="panel-kicker">Global Server</span>
+                        <h2>Top 10 Ranking</h2>
+                    </div>
+
+                    <div class="table-wrap">
+                        <table class="ranking-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Faction</th>
+                                    <th>Rank</th>
+                                    <th>RP</th>
+                                    <th>High Score</th>
+                                    <th>Profile</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pvpTop10Body">
+                                <tr>
+                                    <td colspan="6">No PvP records yet</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="panel player-search-panel">
+                <div class="panel-header">
+                    <span class="panel-kicker">Player Directory</span>
+                    <h2>Search Players</h2>
+                </div>
+
+                <div class="player-search-toolbar">
+                    <input
+                        id="playerSearchInput"
+                        class="text-input"
+                        type="text"
+                        maxlength="30"
+                        placeholder="Search by player name"
+                    />
+                    <button id="playerSearchBtn" class="secondary-btn">Search</button>
+                </div>
+
+                <div id="playerSearchStatus" class="panel-note">
+                    Search by player name to find players outside the Top 10.
+                </div>
+
+                <div class="table-wrap">
+                    <table class="ranking-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Faction</th>
+                                <th>Rank</th>
+                                <th>RP</th>
+                                <th>High Score</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="playerSearchResultsBody">
+                            <tr>
+                                <td colspan="6">No search results yet</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="panel friends-panel">
+                <div class="panel-header">
+                    <span class="panel-kicker">Social</span>
+                    <h2>Friends & Requests</h2>
+                </div>
+
+                <div class="rank-columns">
+                    <div class="rank-preview">
+                        <h3>Friends List</h3>
+                        <div id="friendsListWrap">
+                            <p class="panel-note">No friends yet.</p>
+                        </div>
+                    </div>
+
+                    <div class="rank-preview">
+                        <h3>Incoming Requests</h3>
+                        <div id="friendRequestsWrap">
+                            <p class="panel-note">No incoming requests.</p>
+                        </div>
+                    </div>
+
+                    <div class="rank-preview">
+                        <h3>Match Invites</h3>
+                        <div id="matchInvitesWrap">
+                            <p class="panel-note">No match invites.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- START SCREEN (OFFLINE) -->
+        <section id="startScreen" class="screen hidden">
+             <div class="screen-top-actions">
+                <button id="offlineBackToModeSelectBtn" class="ghost-btn">← Back to Mode Select</button>
+            </div>
+            
+            <div class="layout-two-cols">
+                <div class="panel start-panel">
+                    <div class="panel-header">
+                        <span class="panel-kicker">Offline Mode</span>
+                        <h2>Start Your Journey</h2>
+                    </div>
+
+                    <div class="play-type-card">
+                        <h3>Play Style</h3>
+                        <div class="play-type-actions">
+                            <button id="singleRunBtn" class="secondary-btn active">Single Run</button>
+                            <button id="continuousRunBtn" class="secondary-btn">Continuous</button>
+                        </div>
+                        <p id="playTypeDescription" class="play-type-desc">
+                            Play exactly 1 match and get the final result.
+                        </p>
+                    </div>
+
+                    <div class="mode-grid">
+                        <button class="mode-card easy" onclick="startGame('easy')">
+                            <span class="mode-name">Easy</span>
+                            <span class="mode-info">9×10 • 15:00 • Hints</span>
+                        </button>
+
+                        <button class="mode-card hard" onclick="startGame('hard')">
+                            <span class="mode-name">Hard</span>
+                            <span class="mode-info">10×15 • 12:00 • Manual Reshuffle</span>
+                        </button>
+
+                        <button class="mode-card insane" onclick="startGame('insane')">
+                            <span class="mode-name">Insane</span>
+                            <span class="mode-info">12×15 • 10:00 • Fixed Shift</span>
+                        </button>
+
+                        <button class="mode-card impossible" onclick="startGame('impossible')">
+                            <span class="mode-name">Impossible</span>
+                            <span class="mode-info">15×20 • 10:00 • Random Shift</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="panel leaderboard-panel">
+                    <div class="panel-header">
+                        <span class="panel-kicker">Offline Records</span>
+                        <h2>Leaderboard</h2>
+                    </div>
+
+                    <div class="table-wrap">
+                        <table class="ranking-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Score</th>
+                                    <th>Time</th>
+                                    <th>Mode</th>
+                                    <th>Stages</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboardBody">
+                                <tr>
+                                    <td colspan="5">No records yet</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GAME CONTAINER -->
+        <section id="gameContainer" class="game-container hidden">
+            <div class="game-topbar panel">
+                <div class="topbar-left">
+                    <button id="homeBtn" class="ghost-btn">🏠 Home</button>
+                    <button id="restartBtn" class="ghost-btn">↺ Restart</button>
+                    <button id="pauseBtn" class="ghost-btn">⏸ Pause</button>
+                    <button id="hintBtn" class="ghost-btn">💡Hints</button>
+                    <button id="reshuffleBtn" class="ghost-btn hidden">🔄 Reshuffle</button>
+                    <button id="endRunBtn" class="ghost-btn hidden">🛑 End Run</button>
+                </div>
+
+                <div class="topbar-right">
+                    <div id="score" class="score-pill">Score: 0</div>
+                    <button id="soundBtn" class="ghost-btn">🔊 Sound</button>
+                    <div class="volume-wrap">
+                        <label for="volumeSlider">Vol</label>
+                        <input id="volumeSlider" type="range" min="0" max="100" value="25" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-main">
+                <aside class="time-column panel">
+                    <div class="time-column-title">WANTED POSTER</div>
+                    <div class="time-track">
+                        <div class="wanted-stamp">DEAD OR ALIVE</div>
+
+                        <div id="timeBar" class="time-bar">
+                            <div class="wanted-portrait"></div>
+                            <div class="burn-edge">
+                                <span class="ash ash-1"></span>
+                                <span class="ash ash-2"></span>
+                                <span class="ash ash-3"></span>
+                                <span class="ash ash-4"></span>
+                                <span class="ash ash-5"></span>
+                                <span class="ash ash-6"></span>
+                                <span class="ash ash-7"></span>
+                                <span class="ash ash-8"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="timeBarValue" class="time-bar-value">00:00</div>
+                </aside>
+
+                <div class="board-side">
+                    <div class="board-wrapper">
+                        <canvas id="lineCanvas"></canvas>
+                        <div id="board" class="board"></div>
+
+                        <div id="pauseOverlay" class="pause-overlay hidden">
+                            <div class="pause-card">
+                                <h2>Paused</h2>
+                                <p>Take a breath before sailing again.</p>
+                            </div>
+                        </div>
+
+                        <div id="quitConfirmOverlay" class="pause-overlay hidden">
+                            <div class="pause-card quit-confirm-card">
+                                <h2>Quit Match?</h2>
+                                <p id="quitConfirmText">
+                                    If you quit now, this match will be counted as a defeat and saved to match history.
+                                </p>
+                                <div class="pause-actions">
+                                    <button id="confirmQuitBtn" class="primary-btn">Enter = Confirm Quit</button>
+                                    <button id="cancelQuitBtn" class="ghost-btn">No, Continue Playing</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- END SCREEN -->
+        <section id="endScreen" class="screen screen-center hidden">
+            <div class="panel end-panel">
+                <h2 id="endMessage">RESULT</h2>
+                <p id="bonusMessage"></p>
+                <p id="modeBonusMessage"></p>
+                <p id="totalScoreMessage"></p>
+                <p id="leaderboardRankMessage"></p>
+
+                <div class="end-actions">
+                    <button id="restartFromEndBtn" class="primary-btn" onclick="restartGame()">Play Again</button>
+                    <button id="backToOfflineScreenBtn" class="ghost-btn hidden">← Back to Offline Mode</button>
+                    <button id="backToPvpLobbyBtn" class="ghost-btn hidden">← Back to PvP Lobby</button>
+                    <button class="ghost-btn" onclick="showModeSelectScreen()">← Back to Mode Select</button>
+                </div>
+            </div>
+        </section>
+
+         <!-- PROFILE / HISTORY MODAL -->
+        <div id="profileHistoryModal" class="pause-overlay hidden">
+            <div class="pause-card quit-confirm-card profile-history-card">
+                <h2 id="profileHistoryTitle">Player Profile</h2>
+                <p id="profileHistoryMeta"></p>
+
+                <div id="profileHistoryPrivacyWrap" class="hidden">
+                    <label class="profile-history-toggle">
+                        <input id="profileHistoryVisibilityToggle" type="checkbox" />
+                        Show my PvP history to other players
+                    </label>
+                </div>
+
+                <div id="profileHistoryStats" class="profile-history-stats"></div>
+                <div id="profileHistoryList" class="profile-history-list"></div>
+
+                <div class="pause-actions">
+                    <button id="closeProfileHistoryBtn" class="ghost-btn">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

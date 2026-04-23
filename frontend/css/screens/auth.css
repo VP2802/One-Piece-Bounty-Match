@@ -1,0 +1,103 @@
+/* =========================================================
+   AUTH SCREEN
+   ========================================================= */
+
+#authScreen .auth-panel{
+    width: min(912px, 100%);
+    padding: 43px 41px 48px;
+}
+
+.auth-form{
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 18px;
+}
+
+.field-group{
+    display: grid;
+    gap: 12px;
+}
+
+.field-label{
+    color: var(--gold-soft);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.text-input{
+    width: 100%;
+    padding: 15px 16px;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.05);
+    color: var(--ink);
+    outline: none;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+}
+
+.text-input:focus{
+    border-color: rgba(103, 232, 249, 0.48);
+    box-shadow:
+        0 0 0 3px rgba(103, 232, 249, 0.12),
+        inset 0 1px 0 rgba(255,255,255,0.04);
+}
+
+.faction-grid{
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.faction-card{
+    padding: 18px;
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02)),
+        rgba(9, 28, 48, 0.66);
+    color: var(--ink);
+    text-align: left;
+    cursor: pointer;
+    transition: 0.22s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.faction-card:hover{
+    transform: translateY(-2px);
+    filter: brightness(1.04);
+}
+
+.faction-card.active{
+    border-color: rgba(251, 191, 36, 0.48);
+    box-shadow:
+        0 0 0 3px rgba(251, 191, 36, 0.16),
+        0 10px 22px rgba(0,0,0,0.24);
+    background:
+        linear-gradient(180deg, rgba(251, 191, 36, 0.10), rgba(255,255,255,0.02)),
+        rgba(9, 28, 48, 0.82);
+}
+
+.faction-title{
+    display: block;
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 6px;
+}
+
+.faction-subtitle{
+    color: var(--muted);
+    font-size: 15px;
+}
+
+.auth-actions,
+.pvp-lobby-actions,
+.play-type-actions,
+.end-actions,
+.pause-actions{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
