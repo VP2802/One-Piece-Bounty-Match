@@ -158,3 +158,19 @@
     margin-top: 22px;
     padding: 34px 31px;
 }
+
+/* =========================================================
+   RANKED ROOM SECTION
+   ========================================================= */
+
+.ranked-room {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 25px;
+  padding: 10px 0;
+}
+
+#rankedRandomMatchBtn {
+  margin-bottom: 8px;
+}

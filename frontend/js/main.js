@@ -22,7 +22,8 @@ import {
   setPlayType,
   syncTimeColumnHeight
 } from "./ui.js";
-import { setSelectedFaction, handleAuth } from "./pvp/auth.js";
+import { setSelectedFaction, handleAuth, showAuthForm,
+        prepareAuthScreen, updatePasswordRules } from "./pvp/auth.js";
 import { handlePracticeBotMatch } from "./pvp/bot.js";
 import {
   handleFriendlyPvpMatch,
@@ -40,7 +41,9 @@ import { handlePlayerSearch } from "./pvp/social.js";
 import { renderFriendsAndRequests } from "./pvp/friends.js";
 import {
   handleRandomFriendlyMatch,
-  handleCancelRandomFriendlyMatch
+  handleCancelRandomFriendlyMatch,
+  handleRankedMatchmaking,        
+  handleCancelRankedMatchmaking   
 } from "./pvp/matchmaking.js";
 import {
   showStartScreen,
@@ -131,6 +134,24 @@ function bindModeSelectEvents() {
 function bindAuthEvents() {
   dom.authBackBtn?.addEventListener("click", showModeSelectScreen);
 
+  dom.authSignUpTab?.addEventListener("click", () => {
+    showAuthForm("signup");
+  });
+
+  dom.authSignInTab?.addEventListener("click", () => {
+    showAuthForm("signin");
+  });
+
+  dom.authBackToTabsBtn?.addEventListener("click", () => {
+    if (typeof prepareAuthScreen === "function") {
+      prepareAuthScreen("signin");
+    }
+  });
+
+  dom.authSubmitBtn?.addEventListener("click", async () => {
+    await handleAuth();
+  });
+
   dom.pirateFactionBtn?.addEventListener("click", () => {
     setSelectedFaction("pirate");
   });
@@ -139,18 +160,26 @@ function bindAuthEvents() {
     setSelectedFaction("marine");
   });
 
-  dom.signUpBtn?.addEventListener("click", async () => {
-    await handleAuth("signup");
+  dom.authPasswordInput?.addEventListener("keydown", async (event) => {
+    if (event.key !== "Enter") return;
+    event.preventDefault();
+    await handleAuth();
   });
 
-  dom.signInBtn?.addEventListener("click", async () => {
-    await handleAuth("signin");
+  dom.authConfirmPasswordInput?.addEventListener("keydown", async (event) => {
+    if (event.key !== "Enter") return;
+    event.preventDefault();
+    await handleAuth();
   });
 
   dom.authPlayerNameInput?.addEventListener("keydown", async (event) => {
     if (event.key !== "Enter") return;
     event.preventDefault();
-    await handleAuth(state.authMode || "signin");
+    dom.authPasswordInput?.focus();
+  });
+
+  dom.authPasswordInput?.addEventListener("input", () => {
+    if (state.authMode === "signup") updatePasswordRules();
   });
 }
 
@@ -209,6 +238,10 @@ function bindLobbyEvents() {
 
   dom.rankedRandomMatchBtn?.addEventListener("click", async () => {
     await handleRankedMatchmaking();  
+  });
+
+  dom.cancelRankedMatchBtn?.addEventListener("click", async () => {
+    await handleCancelRankedMatchmaking();
   });
 }
 

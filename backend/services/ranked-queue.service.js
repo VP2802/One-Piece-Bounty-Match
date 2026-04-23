@@ -1,3 +1,4 @@
+const db = require("../db");
 const { rankedQueue, matchedRankedRooms } = require("../stores/ranked-queue.store");
 const {
   createRankedRoomForUser,
@@ -96,12 +97,30 @@ function joinRankedQueue(req, res) {
       rankedQueue.splice(opponentIndex, 1);
     }
 
-    matchedRankedRooms.set(opponent.user_id, { matched: true });
-    matchedRankedRooms.set(numericUserId, { matched: true });
+    createRankedRoomForUser(opponent.user_id, (createErr, room) => {
+      if (createErr) {
+        return res.status(500).json({
+          message: "Failed to create ranked room",
+          error: createErr.message
+        });
+      }
 
-    return res.json({
-      status: "matched",
-      room: { room_code: "random-matched-room-code" }  
+      joinRankedRoomByCode(numericUserId, room.room_code, (joinErr, joinedRoom) => {
+        if (joinErr) {
+          return res.status(500).json({
+            message: "Failed to join ranked room",
+            error: joinErr.message
+          });
+        }
+
+        matchedRankedRooms.set(opponent.user_id, joinedRoom);
+        matchedRankedRooms.set(numericUserId, joinedRoom);
+
+        return res.json({
+          status: "matched",
+          room: joinedRoom
+        });
+      });
     });
   });
 }

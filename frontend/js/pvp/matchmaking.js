@@ -3,11 +3,15 @@ import { dom } from "../dom.js";
 import {
   joinFriendlyQueue,
   leaveFriendlyQueue,
-  fetchFriendlyQueueStatus
+  fetchFriendlyQueueStatus,
+  joinRankedQueue,           
+  leaveRankedQueue,           
+  fetchRankedQueueStatus
 } from "../api.js";
 import { notify } from "../ui.js";
 import {
   showPvpRoomCard,
+  hidePvpRoomCard,
   updatePvpRoomStatus,
   startRoomMatchPolling
 } from "./room.js";
@@ -109,28 +113,62 @@ export async function handleRankedMatchmaking() {
   try {
     const result = await joinRankedQueue(state.currentUser.id);
 
-    showPvpRoomCard();
+    hidePvpRoomCard();
 
     if (result.status === "matched" && result.room) {
       state.currentRoomMatch = result.room;
       state.currentPvpMode = "ranked";
 
       notify("Ranked match found!", "success", 1800);
-      updatePvpRoomStatus(
-        `Ranked room ${result.room.room_code} matched. Starting soon...`
-      );
+      
+      if (dom.rankedMatchStatus) {
+        dom.rankedMatchStatus.textContent = `Match found! Room: ${result.room.room_code}`;
+      }
 
       startRoomMatchPolling("ranked");
+      
+      dom.rankedRandomMatchBtn?.classList.remove("hidden");
+      dom.cancelRankedMatchBtn?.classList.add("hidden");
       return;
     }
 
-    updatePvpRoomStatus("Searching for a ranked opponent...");
+    if (dom.rankedMatchStatus) {
+      dom.rankedMatchStatus.textContent = "Searching for a ranked opponent...";
+    }
+    
     startRankedQueuePolling();
 
-    dom.findRankedMatchBtn?.classList.add("hidden");
+    dom.rankedRandomMatchBtn?.classList.add("hidden");
     dom.cancelRankedMatchBtn?.classList.remove("hidden");
+    
   } catch (error) {
     notify(error.message || "Failed to join ranked queue.", "error");
+    
+    dom.rankedRandomMatchBtn?.classList.remove("hidden");
+    dom.cancelRankedMatchBtn?.classList.add("hidden");
+    if (dom.rankedMatchStatus) {
+      dom.rankedMatchStatus.textContent = "Click to find a ranked opponent automatically.";
+    }
+  }
+}
+
+export async function handleCancelRankedMatchmaking() {
+  if (!state.currentUser) return;
+
+  try {
+    await leaveRankedQueue(state.currentUser.id);
+    stopRankedQueuePolling();
+    
+    notify("Ranked match search cancelled.", "info", 1800);
+    
+    dom.rankedRandomMatchBtn?.classList.remove("hidden");
+    dom.cancelRankedMatchBtn?.classList.add("hidden");
+    
+    if (dom.rankedMatchStatus) {
+      dom.rankedMatchStatus.textContent = "Click to find a ranked opponent automatically.";
+    }
+  } catch (error) {
+    notify(error.message || "Failed to leave ranked queue.", "error");
   }
 }
 
@@ -143,13 +181,18 @@ export function startRankedQueuePolling() {
   stopRankedQueuePolling();
 
   state.rankedQueuePolling = setInterval(async () => {
-    if (!state.currentUser) return;
+    if (!state.currentUser) {
+      stopRankedQueuePolling();
+      return;
+    }
 
     try {
       const result = await fetchRankedQueueStatus(state.currentUser.id);
 
       if (result.status === "searching") {
-        updatePvpRoomStatus("Searching for a ranked opponent near your RP...");
+        if (dom.rankedMatchStatus) {
+          dom.rankedMatchStatus.textContent = "Searching for a ranked opponent near your RP...";
+        }
         return;
       }
 
@@ -160,15 +203,28 @@ export function startRankedQueuePolling() {
         state.currentPvpMode = "ranked";
 
         notify("Ranked match found!", "success", 1800);
-        updatePvpRoomStatus(
-          `Ranked room ${result.room.room_code} matched. Starting soon...`
-        );
+        
+        if (dom.rankedMatchStatus) {
+          dom.rankedMatchStatus.textContent = `Match found! Starting soon...`;
+        }
+
+        dom.rankedRandomMatchBtn?.classList.remove("hidden");
+        dom.cancelRankedMatchBtn?.classList.add("hidden");
 
         startRoomMatchPolling("ranked");
+      }
+      
+      if (result.status === "idle") {
+        stopRankedQueuePolling();
+        dom.rankedRandomMatchBtn?.classList.remove("hidden");
+        dom.cancelRankedMatchBtn?.classList.add("hidden");
       }
     } catch (error) {
       stopRankedQueuePolling();
       notify(error.message || "Ranked matchmaking failed.", "error");
+      
+      dom.rankedRandomMatchBtn?.classList.remove("hidden");
+      dom.cancelRankedMatchBtn?.classList.add("hidden");
     }
   }, 2000);
 }

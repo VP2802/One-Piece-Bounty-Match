@@ -88,4 +88,5 @@ export const state = {
   hasSwitchedToDangerBgm: false,
 
   friendlyQueuePolling: null,
+  rankedQueuePolling: null,
 };

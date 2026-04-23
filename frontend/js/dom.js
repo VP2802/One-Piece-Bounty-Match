@@ -52,12 +52,30 @@ export const dom = {
   authScreen: document.getElementById("authScreen"),
   authTitle: document.getElementById("authTitle"),
   authPlayerNameInput: document.getElementById("authPlayerNameInput"),
+  authPasswordInput: document.getElementById("authPasswordInput"),
+  authConfirmPasswordInput: document.getElementById("authConfirmPasswordInput"),
+  confirmPasswordGroup: document.getElementById("confirmPasswordGroup"),
+  authPlayerNameInfo: document.getElementById("authPlayerNameInfo"),
   pirateFactionBtn: document.getElementById("pirateFactionBtn"),
   marineFactionBtn: document.getElementById("marineFactionBtn"),
-  signUpBtn: document.getElementById("signUpBtn"),
-  signInBtn: document.getElementById("signInBtn"),
   authBackBtn: document.getElementById("authBackBtn"),
+  authTabSelection: document.getElementById("authTabSelection"),
+  authFormContent: document.getElementById("authFormContent"),
+  authSignUpTab: document.getElementById("authSignUpTab"),
+  authSignInTab: document.getElementById("authSignInTab"),
+  authSubmitBtn: document.getElementById("authSubmitBtn"),
+  authBackToTabsBtn: document.getElementById("authBackToTabsBtn"),
+  factionGroup: document.getElementById("factionGroup"),
   pvpLobbyBackBtn: document.getElementById("pvpLobbyBackBtn"),
+
+  passwordRules: document.getElementById("passwordRules"),
+  ruleLength: document.getElementById("rule-length"),
+  ruleUpper: document.getElementById("rule-upper"),
+  ruleLower: document.getElementById("rule-lower"),
+  ruleDigit: document.getElementById("rule-digit"),
+
+  togglePasswordButtons: document.querySelectorAll(".toggle-password"),
+  confirmMatchIndicator: document.getElementById("confirmMatchIndicator"),
 
   pvpLobbyScreen: document.getElementById("pvpLobbyScreen"),
   pvpWelcomeText: document.getElementById("pvpWelcomeText"),
@@ -95,10 +113,9 @@ export const dom = {
   randomFriendlyMatchBtn: document.getElementById("randomFriendlyMatchBtn"),
   cancelRandomFriendlyMatchBtn: document.getElementById("cancelRandomFriendlyMatchBtn"),
 
-  rankedCreateRoomBtn: document.getElementById("rankedCreateRoomBtn"),
-  rankedJoinRoomBtn: document.getElementById("rankedJoinRoomBtn"),
   rankedRandomMatchBtn: document.getElementById("rankedRandomMatchBtn"),
-  rankedRoomCode: document.getElementById("rankedRoomCode"),
+  cancelRankedMatchBtn: document.getElementById("cancelRankedMatchBtn"),
+  rankedMatchStatus: document.getElementById("rankedMatchStatus"),
 
-  matchInvitesWrap: document.getElementById("matchInvitesWrap")
+  matchInvitesWrap: document.getElementById("matchInvitesWrap"),
 };

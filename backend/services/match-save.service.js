@@ -2,6 +2,35 @@ const db = require("../db");
 const { getRankFromPoints, clampRankPoints } = require("../rank");
 const { resolvePvpResult } = require("../utils/pvp.utils");
 
+function getKFactor(rp, faction) {
+  const rank = getRankFromPoints(rp, faction).toLowerCase();
+  if (rank.includes("rookie") || rank.includes("recruit")) return 50;
+  if (rank.includes("crewmate") || rank.includes("petty officer")) return 40;
+  if (rank.includes("captain") && !rank.includes("yonko") && !rank.includes("fleet")) return 30;
+  if (rank.includes("super rookie") || rank.includes("major")) return 25;
+  if (rank.includes("shichibukai") || rank.includes("commodore")) return 25;
+  if (rank.includes("yonko commander") || rank.includes("vice admiral")) return 25;
+  if (rank.includes("yonko") && !rank.includes("commander")) return 20;
+  if (rank.includes("pirate king") || rank.includes("fleet admiral")) return 20;
+  return 25;
+}
+
+function calculateRankedRPChange(playerRP, opponentRP, result, faction) {
+  const K = getKFactor(playerRP, faction);
+  const expectedScore = 1 / (1 + Math.pow(10, (opponentRP - playerRP) / 400));
+  
+  let actualScore;
+  switch (result) {
+    case "win": actualScore = 1; break;
+    case "draw": actualScore = 0.5; break;
+    case "loss": actualScore = 0; break;
+    default: return 0;
+  }
+  
+  const rawChange = Math.round(K * (actualScore - expectedScore));
+  return Math.max(-50, Math.min(50, rawChange));
+}
+
 function saveBotPracticeMatch(payload, callback) {
   const {
     user_id,
@@ -387,18 +416,33 @@ function saveRankedRoomMatch(payload, callback) {
     let player2Change = 0;
     let winnerUserId = null;
 
+    let player1Result, player2Result;
     if (result === "player1_win") {
-      player1Change = 50;
-      player2Change = -25;
+      player1Result = "win";
+      player2Result = "loss";
       winnerUserId = player1.id;
     } else if (result === "player2_win") {
-      player1Change = -25;
-      player2Change = 50;
+      player1Result = "loss";
+      player2Result = "win";
       winnerUserId = player2.id;
-    } else {
-      player1Change = 10;
-      player2Change = 10;
+    } else { 
+      player1Result = "draw";
+      player2Result = "draw";
     }
+
+    player1Change = calculateRankedRPChange(
+      player1.ranking_points ?? 0,
+      player2.ranking_points ?? 0,
+      player1Result,
+      player1.faction
+    );
+
+    player2Change = calculateRankedRPChange(
+      player2.ranking_points ?? 0,
+      player1.ranking_points ?? 0,
+      player2Result,
+      player2.faction
+    );
 
     const newPlayer1Points = clampRankPoints(
       (player1.ranking_points ?? 0) + player1Change

@@ -337,14 +337,37 @@ export async function finishRoomMatch(didClearBoard, mode) {
 
 export async function handleFriendlyPvpMatch() {
   state.currentPvpMode = "friendly";
+
+  const rankedRoomDiv = document.querySelector(".ranked-room");
+  if (rankedRoomDiv) {
+    rankedRoomDiv.classList.add("hidden");
+  }
+
   showPvpRoomCard();
   updatePvpRoomCard("friendly");
 }
 
 export async function handleRankedPvpMatch() {
   state.currentPvpMode = "ranked";
-  showPvpRoomCard();
-  updatePvpRoomCard("ranked");
+  
+  hidePvpRoomCard();
+  
+  const rankedRoomDiv = document.querySelector(".ranked-room");
+  if (rankedRoomDiv) {
+    rankedRoomDiv.classList.remove("hidden");
+  }
+  
+  if (dom.rankedMatchStatus) {
+    dom.rankedMatchStatus.textContent = "Click 'Random Match' to find an opponent";
+  }
+  
+  if (dom.rankedRandomMatchBtn) {
+    dom.rankedRandomMatchBtn.classList.remove("hidden");
+  }
+  
+  if (dom.cancelRankedMatchBtn) {
+    dom.cancelRankedMatchBtn.classList.add("hidden");
+  }
 }
 
 export async function quitCurrentPvpMatch() {

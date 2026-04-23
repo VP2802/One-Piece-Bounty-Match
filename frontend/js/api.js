@@ -22,17 +22,20 @@ export async function apiRequest(path, method = "GET", body = null) {
   return data;
 }
 
-export async function signUpUser(playerName, faction) {
+export async function signUpUser(playerName, faction, password) {
   return apiRequest("/auth/signup", "POST", {
     player_name: playerName,
-    faction
+    faction,
+    password,
+    confirm_password: password  
   });
 }
 
-export async function signInUser(playerName, faction) {
+export async function signInUser(playerName, faction, password) {
   return apiRequest("/auth/signin", "POST", {
     player_name: playerName,
-    faction
+    faction,
+    password
   });
 }
 

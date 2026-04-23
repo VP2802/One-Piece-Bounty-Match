@@ -8,9 +8,9 @@ import { stopOpponentScoreTracking } from "./pvp/bot.js";
 import {
   stopRoomMatchPolling,
   stopRoomMatchProgressTracking,
-  hidePvpRoomCard,
-  isRoomPvpMode
+  hidePvpRoomCard
 } from "./pvp/room.js";
+import { prepareAuthScreen } from "./pvp/auth.js";
 
 function assetUrl(relativePath) {
   return new URL(relativePath, import.meta.url).href;
@@ -311,6 +311,9 @@ export function showModeSelectScreen() {
     dom.authPlayerNameInput.value = "";
   }
 
+  if (dom.authPasswordInput) dom.authPasswordInput.value = "";
+  if (dom.authConfirmPasswordInput) dom.authConfirmPasswordInput.value = "";
+
   hideAllMainScreens();
   dom.modeSelectScreen?.classList.remove("hidden");
   dom.quitConfirmOverlay?.classList.add("hidden");
@@ -335,13 +338,9 @@ export function showAuthScreen(mode = "signin") {
   hideAllMainScreens();
   dom.authScreen?.classList.remove("hidden");
 
-  if (dom.authTitle) {
-    dom.authTitle.textContent = mode === "signup" ? "PvP Sign Up" : "PvP Sign In";
+  if (typeof prepareAuthScreen === "function") {
+    prepareAuthScreen(mode);
   }
-
-  setTimeout(() => {
-    dom.authPlayerNameInput?.focus();
-  }, 0);
 }
 
 export async function showPvpLobbyScreen() {
@@ -366,10 +365,30 @@ export async function showPvpLobbyScreen() {
 
   await renderPvpTop10();
 
+  const rankedRoomDiv = document.querySelector(".ranked-room");
+  if (rankedRoomDiv) {
+    rankedRoomDiv.classList.add("hidden");
+  }
+
   hidePvpRoomCard();
   stopRoomMatchPolling();
   stopRoomMatchProgressTracking();
   stopOpponentScoreTracking();
+
+  if (dom.rankedRandomMatchBtn) {
+    dom.rankedRandomMatchBtn.classList.remove("hidden");
+  }
+  if (dom.cancelRankedMatchBtn) {
+    dom.cancelRankedMatchBtn.classList.add("hidden");
+  }
+  if (dom.rankedMatchStatus) {
+    dom.rankedMatchStatus.textContent = "Click to find a ranked opponent automatically.";
+  }
+
+  if (state.rankedQueuePolling) {
+    clearInterval(state.rankedQueuePolling);
+    state.rankedQueuePolling = null;
+  }
 
   state.currentBoardSeed = null;
   state.currentPvpMode = null;

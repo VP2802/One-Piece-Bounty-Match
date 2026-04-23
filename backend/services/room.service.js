@@ -455,8 +455,118 @@ function createFriendlyRoomForUser(userId, callback) {
   });
 }
 
+function createRankedRoomForUser(userId, callback) {
+  const mode = "ranked";
+  const store = getRoomMatchStore(mode);
+
+  if (!store) {
+    return callback(new Error("Invalid room mode"));
+  }
+
+  const getUserSql = `
+    SELECT
+      u.id,
+      u.player_name,
+      u.faction,
+      ls.ranking_points,
+      ls.current_rank
+    FROM users u
+    JOIN leaderboard_stats ls ON u.id = ls.user_id
+    WHERE u.id = ?
+    LIMIT 1
+  `;
+
+  db.query(getUserSql, [userId], (err, results) => {
+    if (err) return callback(err);
+    if (results.length === 0) return callback(new Error("User not found"));
+
+    const user = results[0];
+    const room_code = generateRoomCodeForStore(store);
+
+    const randomModes = ["hard", "insane", "impossible"];
+    const random_mode =
+      randomModes[Math.floor(Math.random() * randomModes.length)];
+
+    const board_seed = generateBoardSeed();
+
+    const room = {
+      room_code,
+      status: "waiting",
+      random_mode,
+      board_seed,
+      host_user: {
+        id: user.id,
+        player_name: user.player_name,
+        faction: user.faction,
+        ranking_points: user.ranking_points ?? 0,
+        current_rank:
+          user.current_rank ??
+          getRankFromPoints(user.ranking_points ?? 0, user.faction)
+      },
+      guest_user: null,
+      live_progress: {
+        host: { score: 0, stage: 0, updated_at: Date.now() },
+        guest: { score: 0, stage: 0, updated_at: null }
+      },
+      submitted_results: {
+        host: null,
+        guest: null
+      },
+      created_at: Date.now()
+    };
+
+    store.set(room_code, room);
+    callback(null, sanitizeRoomMatch(room));
+  });
+}
+
 function joinFriendlyRoomByCode(userId, roomCode, callback) {
   const mode = "friendly";
+  const store = getRoomMatchStore(mode);
+  const room = store?.get(String(roomCode).toUpperCase());
+
+  if (!room) return callback(new Error("Room not found"));
+  if (room.guest_user) return callback(new Error("Room is already full"));
+  if (room.host_user.id === Number(userId)) {
+    return callback(new Error("Host cannot join their own room as guest"));
+  }
+
+  const getUserSql = `
+    SELECT
+      u.id,
+      u.player_name,
+      u.faction,
+      ls.ranking_points,
+      ls.current_rank
+    FROM users u
+    JOIN leaderboard_stats ls ON u.id = ls.user_id
+    WHERE u.id = ?
+    LIMIT 1
+  `;
+
+  db.query(getUserSql, [userId], (err, results) => {
+    if (err) return callback(err);
+    if (results.length === 0) return callback(new Error("User not found"));
+
+    const user = results[0];
+
+    room.guest_user = {
+      id: user.id,
+      player_name: user.player_name,
+      faction: user.faction,
+      ranking_points: user.ranking_points ?? 0,
+      current_rank:
+        user.current_rank ??
+        getRankFromPoints(user.ranking_points ?? 0, user.faction)
+    };
+
+    room.status = "ready";
+    callback(null, sanitizeRoomMatch(room));
+  });
+}
+
+function joinRankedRoomByCode(userId, roomCode, callback) {
+  const mode = "ranked";
   const store = getRoomMatchStore(mode);
   const room = store?.get(String(roomCode).toUpperCase());
 
@@ -508,5 +618,7 @@ module.exports = {
   leaveRoomMatch,
   submitRoomMatchResult,
   createFriendlyRoomForUser,
-  joinFriendlyRoomByCode
+  joinFriendlyRoomByCode,
+  createRankedRoomForUser,
+  joinRankedRoomByCode
 };

@@ -48,20 +48,66 @@
             <div class="panel auth-panel">
                 <div class="panel-header">
                     <span class="panel-kicker">PvP Access</span>
-                    <h2 id="authTitle">PvP Sign In</h2>
+                    <h2 id="authTitle">Choose Your Path</h2>
                 </div>
 
-                <div class="auth-form">
+                <div id="authTabSelection" class="auth-tabs">
+                    <button id="authSignUpTab" class="primary-btn">Sign Up</button>
+                    <button id="authSignInTab" class="secondary-btn">Sign In</button>
+                </div>
+
+                <div id="authFormContent" class="auth-form hidden">
+                    <div id="authPlayerNameInfo" class="panel-note" style="margin-bottom: 14px; color: var(--gold-soft);">
+                        Your player name will be displayed in-game, on leaderboards, and to other players.
+                    </div>
+
                     <label class="field-label" for="authPlayerNameInput">Player Name</label>
                     <input
                         id="authPlayerNameInput"
                         class="text-input"
                         type="text"
                         maxlength="30"
-                        placeholder="Enter your pirate or marine name"
+                        placeholder="Enter your pirate or marine name (3-30 characters)"
                     />
 
-                    <div class="field-group">
+                    <label class="field-label" for="authPasswordInput">Password</label>
+                    <div class="password-wrap">
+                        <input
+                            id="authPasswordInput"
+                            class="text-input"
+                            type="password"
+                            maxlength="50"
+                            placeholder="Enter password (min 6 characters)"
+                        />
+                        <button type="button" class="toggle-password" data-target="authPasswordInput" aria-label="Show password">👁️</button>
+                    </div>
+
+                    <div id="confirmPasswordGroup">
+                        <label class="field-label" for="authConfirmPasswordInput">Confirm Password</label>
+                        <div class="password-wrap">
+                            <input
+                                id="authConfirmPasswordInput"
+                                class="text-input"
+                                type="password"
+                                maxlength="50"
+                                placeholder="Re‑enter your password to confirm"
+                            />
+                            <button type="button" class="toggle-password" data-target="authConfirmPasswordInput" aria-label="Show password">👁️</button>
+                        </div>
+                        <div id="confirmMatchIndicator" class="confirm-match" style="display:none;"></div>
+                    </div>
+
+                    <div id="passwordRules" class="panel-note" style="display:none; margin-top:6px;">
+                        <p style="margin:0 0 8px; font-weight:600; color:var(--gold-soft);">Password must include:</p>
+                        <ul id="passwordRuleList" style="list-style:none; padding:0; margin:0;">
+                            <li id="rule-length" class="rule-item">❌ At least 8 characters</li>
+                            <li id="rule-upper" class="rule-item">❌ One uppercase letter</li>
+                            <li id="rule-lower" class="rule-item">❌ One lowercase letter</li>
+                            <li id="rule-digit" class="rule-item">❌ One number (0-9)</li>
+                        </ul>
+                    </div>
+
+                    <div id="factionGroup" class="field-group">
                         <span class="field-label">Choose Your Faction</span>
                         <div class="faction-grid">
                             <button id="pirateFactionBtn" type="button" class="faction-card active">
@@ -77,12 +123,13 @@
                     </div>
 
                     <div class="auth-actions">
-                        <button id="signUpBtn" class="primary-btn">Sign Up</button>
-                        <button id="signInBtn" class="secondary-btn">Sign In</button>
+                        <button id="authSubmitBtn" class="primary-btn">Sign In</button>
                     </div>
 
-                    <button id="authBackBtn" class="ghost-btn">← Back</button>
+                    <button id="authBackToTabsBtn" class="ghost-btn">← Back To Selection</button>
                 </div>
+
+                <button id="authBackBtn" class="ghost-btn">← Back To Mode Select</button>
             </div>
         </section>
 
@@ -143,14 +190,10 @@
                         </div>
                     </div>
 
-                    <div class="ranked-room">
-                        <button id="rankedCreateRoomBtn" class="ghost-btn hidden">Create Room</button>
-                        <button id="rankedJoinRoomBtn" class="ghost-btn hidden">Join Room</button>
+                    <div class="ranked-room hidden">
                         <button id="rankedRandomMatchBtn" class="primary-btn">Random Match</button>
-                        <div class="room-code hidden">
-                            <label for="rankedRoomCode">ROOM CODE</label>
-                            <input type="text" id="rankedRoomCode" placeholder="Enter room code to join" class="hidden" />
-                        </div>
+                        <button id="cancelRankedMatchBtn" class="ghost-btn hidden">Cancel Search</button>
+                        <p id="rankedMatchStatus" class="panel-note">Click to find a ranked opponent automatically.</p>
                     </div>
 
                     <div class="rank-preview">
