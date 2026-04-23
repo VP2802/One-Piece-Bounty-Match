@@ -1,39 +1,39 @@
 import { state, constants } from "./state.js";
 import { dom } from "./dom.js";
 
-const matchSound = new Audio(assetUrl("../../sound/match.mp3"));
-const wrongSound = new Audio(assetUrl("../../sound/wrong.mp3"));
-const winSound = new Audio(assetUrl("../../sound/win.mp3"));
-const loseSound = new Audio(assetUrl("../../sound/lose.mp3"));
+const matchSound = new Audio(assetUrl("../sound/match.mp3"));
+const wrongSound = new Audio(assetUrl("../sound/wrong.mp3"));
+const winSound = new Audio(assetUrl("../sound/win.mp3"));
+const loseSound = new Audio(assetUrl("../sound/lose.mp3"));
 
 const normalBgmTracks = [
-  assetUrl("../../sound/bgm/normal/bgm_01_happy_lofi_poor_b.mp3"),
-  assetUrl("../../sound/bgm/normal/bgm_02_happy_lofi_blue_s.mp3"),
-  assetUrl("../../sound/bgm/normal/bgm_03_happy_lofi_clouds.mp3"),
-  assetUrl("../../sound/bgm/normal/bgm_04_happy_lofi_happy.mp3"),
-  assetUrl("../../sound/bgm/normal/bgm_05_happy_lofi_new_s.mp3"),
-  assetUrl("../../sound/bgm/normal/bgm_06_lofi_a_first_s.mp3"),
-  assetUrl("../../sound/bgm/normal/bgm_07_lofi_a_snow.mp3"),
-  assetUrl("../../sound/bgm/normal/bgm_08_lofi_a_2_hours.mp3"),
-  assetUrl("../../sound/bgm/normal/bgm_09_lofi_b_morning.mp3"),
-  assetUrl("../../sound/bgm/normal/bgm_10_lofi_b_a_little.mp3"),
-  assetUrl("../../sound/bgm/normal/bgm_11_lofi_b_whatever.mp3"),
-  assetUrl("../../sound/bgm/normal/bgm_12_lofi_c_waves.mp3"),
-  assetUrl("../../sound/bgm/normal/bgm_13_lofi_c_foggy.mp3"),
-  assetUrl("../../sound/bgm/normal/bgm_14_lofi_c_pretty.mp3"),
-  assetUrl("../../sound/bgm/normal/bgm_15_quiet_village_01.mp3"),
-  assetUrl("../../sound/bgm/normal/bgm_16_quiet_village_03.mp3"),
-  assetUrl("../../sound/bgm/normal/bgm_17_relaxing_night.mp3"),
-  assetUrl("../../sound/bgm/normal/bgm_18_relaxing_lost_in.mp3"),
-  assetUrl("../../sound/bgm/normal/bgm_19_relaxing_you_lo.mp3")
+  assetUrl("../sound/bgm/normal/bgm_01_happy_lofi_poor_b.mp3"),
+  assetUrl("../sound/bgm/normal/bgm_02_happy_lofi_blue_s.mp3"),
+  assetUrl("../sound/bgm/normal/bgm_03_happy_lofi_clouds.mp3"),
+  assetUrl("../sound/bgm/normal/bgm_04_happy_lofi_happy.mp3"),
+  assetUrl("../sound/bgm/normal/bgm_05_happy_lofi_new_s.mp3"),
+  assetUrl("../sound/bgm/normal/bgm_06_lofi_a_first_s.mp3"),
+  assetUrl("../sound/bgm/normal/bgm_07_lofi_a_snow.mp3"),
+  assetUrl("../sound/bgm/normal/bgm_08_lofi_a_2_hours.mp3"),
+  assetUrl("../sound/bgm/normal/bgm_09_lofi_b_morning.mp3"),
+  assetUrl("../sound/bgm/normal/bgm_10_lofi_b_a_little.mp3"),
+  assetUrl("../sound/bgm/normal/bgm_11_lofi_b_whatever.mp3"),
+  assetUrl("../sound/bgm/normal/bgm_12_lofi_c_waves.mp3"),
+  assetUrl("../sound/bgm/normal/bgm_13_lofi_c_foggy.mp3"),
+  assetUrl("../sound/bgm/normal/bgm_14_lofi_c_pretty.mp3"),
+  assetUrl("../sound/bgm/normal/bgm_15_quiet_village_01.mp3"),
+  assetUrl("../sound/bgm/normal/bgm_16_quiet_village_03.mp3"),
+  assetUrl("../sound/bgm/normal/bgm_17_relaxing_night.mp3"),
+  assetUrl("../sound/bgm/normal/bgm_18_relaxing_lost_in.mp3"),
+  assetUrl("../sound/bgm/normal/bgm_19_relaxing_you_lo.mp3")
 ];
 
 const dangerBgmTracks = [
-  assetUrl("../../sound/bgm/danger/danger_01_dark_cinematic_tension.mp3"),
-  assetUrl("../../sound/bgm/danger/danger_02_retro_arcade_game_music.mp3"),
-  assetUrl("../../sound/bgm/danger/danger_03_retro_game_arcade.mp3"),
-  assetUrl("../../sound/bgm/danger/danger_04_retro_game_music.mp3"),
-  assetUrl("../../sound/bgm/danger/danger_05_8bit_retro_game_music.mp3")
+  assetUrl("../sound/bgm/danger/danger_01_dark_cinematic_tension.mp3"),
+  assetUrl("../sound/bgm/danger/danger_02_retro_arcade_game_music.mp3"),
+  assetUrl("../sound/bgm/danger/danger_03_retro_game_arcade.mp3"),
+  assetUrl("../sound/bgm/danger/danger_04_retro_game_music.mp3"),
+  assetUrl("../sound/bgm/danger/danger_05_8bit_retro_game_music.mp3")
 ];
 
 const bgmAudio = new Audio();
