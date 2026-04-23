@@ -2,9 +2,9 @@
 
 Một trò chơi **One Piece** kết nối và ghép cặp (tile‑matching) trên nền web, lấy cảm hứng từ trò chơi Pikachu cổ điển. Dự án sử dụng **HTML, CSS, Vanilla JavaScript** cho phần giao diện và **Node.js + Express + MySQL** cho phần máy chủ PvP trực tuyến.
 
-## 🌐 Demo Trực Tuyến (Offline)
+## 🌐 Demo Trực Tuyến
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-0ea5e9?style=for-the-badge&logo=github)](https://vp2802.github.io/One-Piece-Bounty-Match/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-0ea5e9?style=for-the-badge&logo=github)](https://vp2802.github.io/One-Piece-Bounty-Match/index.html)
 
 *Bản demo chỉ bao gồm chế độ chơi đơn ngoại tuyến. Để trải nghiệm PvP trực tuyến, bạn cần chạy back-end server.*
 
