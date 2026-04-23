@@ -1,12 +1,15 @@
 # One Piece: Bounty Match
 
-Một trò chơi **One Piece** kết nối và ghép cặp (tile‑matching) trên nền web, lấy cảm hứng từ trò chơi Pikachu cổ điển. Dự án sử dụng **HTML, CSS, Vanilla JavaScript** cho phần giao diện và **Node.js + Express + MySQL** cho phần máy chủ PvP trực tuyến.
+Một trò chơi **One Piece** kết nối và ghép cặp (tile‑matching) trên nền web, lấy cảm hứng từ trò chơi Pikachu cổ điển. Dự án sử dụng **HTML, CSS, Vanilla JavaScript** cho phần giao diện và **Node.js + Express + MySQL** cho phần máy chủ PvP trực tuyến, được triển khai trên **Railway**.
 
 ## 🌐 Demo Trực Tuyến
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-0ea5e9?style=for-the-badge&logo=github)](https://vp2802.github.io/One-Piece-Bounty-Match/index.html)
+| Môi trường | Link | Ghi chú |
+|------------|------|---------|
+| **Frontend (GitHub Pages)** | [![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-0ea5e9?style=for-the-badge&logo=github)](https://vp2802.github.io/One-Piece-Bounty-Match/index.html) | Giao diện người dùng, chơi offline được. Cần backend để chơi PvP. |
+| **Backend API (Railway)** | [https://one-piece-bounty-match-production.up.railway.app/](https://one-piece-bounty-match-production.up.railway.app/) | Server xử lý đăng nhập, PvP, xếp hạng. |
 
-*Bản demo chỉ bao gồm chế độ chơi đơn ngoại tuyến. Để trải nghiệm PvP trực tuyến, bạn cần chạy back-end server.*
+*Frontend được deploy tự động từ thư mục `frontend` lên nhánh `gh-pages` thông qua GitHub Actions. Backend được deploy lên Railway với MySQL tích hợp.*
 
 ---
 
@@ -203,24 +206,27 @@ Nếu không còn nước đi hợp lệ:
 - HTML5, CSS3 (biến tùy chỉnh, responsive)
 - JavaScript thuần (ES Modules)
 - LocalStorage cho bảng xếp hạng và cài đặt âm thanh
-- GitHub Pages để lưu trữ tĩnh
+- GitHub Pages + GitHub Actions (CI/CD tự động từ nhánh `main`)
 
 **Backend**
-- Node.js
-- Express.js
-- MySQL (qua `mysql2`)
+- Node.js + Express.js
+- MySQL (qua `mysql2`) – sử dụng Railway MySQL service
 - bcryptjs để băm mật khẩu
 - Lưu trữ trên bộ nhớ (Map) cho hàng đợi và phòng đang hoạt động
+
+**Triển khai & Giám sát**
+- **Railway** – Deploy backend & MySQL database
+- **UptimeRobot** – Giữ server không bị sleep (ping định kỳ 5 phút)
 
 ---
 
 ## 📁 Cấu Trúc Dự Án
 
-OnePieceBountyMatch/
-├── index.html # File HTML chính (frontend)
-├── style.css # Style toàn cục
-├── README.md
-├── frontend/
+One-Piece-Bounty-Match/
+├── .github/workflows/ # GitHub Actions CI/CD
+│ └── deploy-frontend.yml # Workflow deploy frontend lên gh-pages
+├── frontend/ # Mã nguồn giao diện (được deploy lên GitHub Pages)
+│ ├── index.html
 │ ├── css/
 │ │ ├── components/
 │ │ ├── game/
@@ -234,67 +240,183 @@ OnePieceBountyMatch/
 │ │ ├── audio.js # Quản lý âm thanh
 │ │ ├── dom.js # Tham chiếu DOM
 │ │ ├── main.js # Điểm vào & gán sự kiện
-│ │ ├── state.js # Trạng thái toàn cục
+│ │ ├── state.js # Trạng thái toàn cục (chứa API_BASE_URL)
 │ │ └── ui.js # Tiện ích UI & quản lý màn hình
-│ └── index.html # (nếu phục vụ riêng)
-├── backend/
+│ ├── image/ # Hình ảnh tile & background board
+│ └── sound/ # SFX và BGM
+├── backend/ # Mã nguồn máy chủ (deploy lên Railway)
 │ ├── routes/ # Định nghĩa các route Express
 │ ├── services/ # Logic nghiệp vụ & truy vấn DB
 │ ├── stores/ # Lưu trữ trên bộ nhớ (hàng đợi, phòng)
 │ ├── utils/ # Hàm tiện ích
 │ ├── app.js # Thiết lập Express app
-│ ├── db.js # Kết nối MySQL
+│ ├── db.js # Kết nối MySQL (hỗ trợ biến Railway)
 │ ├── server.js # Điểm vào máy chủ
 │ ├── rank.js # Tính toán cấp bậc
-│ └── .env # Biến môi trường
-├── image/ # Hình ảnh tile & background board
-└── sound/ # SFX và BGM
+│ └── package.json
+├── .gitignore
+└── README.md
 
----
+-----
 
-## ⚙️ Cài Đặt & Khởi Chạy (PvP Mode)
+## ⚙️ Hướng Dẫn Cài Đặt & Triển Khai
 
-Để trải nghiệm đầy đủ tính năng PvP và lưu trữ dữ liệu, hãy thực hiện theo các bước sau:
+Dự án hỗ trợ hai phương thức vận hành chính: Trải nghiệm cá nhân (Offline) hoặc Hệ thống đầy đủ tính năng (Online PvP).
 
-### 1. Tải mã nguồn
-```bash
-git clone https://github.com/VP2802/One-Piece-Bounty-Match.git
-cd One-Piece-Bounty-Match
+### 🕹️ A. Chơi Offline (Frontend Tĩnh)
+
+Phù hợp để test gameplay nhanh hoặc chơi đơn. Dữ liệu bảng xếp hạng được lưu tại trình duyệt của người chơi (**LocalStorage**).
+
+1.  **Clone repository:**
+    ```bash
+    git clone https://github.com/VP2802/One-Piece-Bounty-Match.git
+    ```
+2.  **Khởi chạy:**
+      * Truy cập trực tiếp: [One Piece Bounty Match Online](https://vp2802.github.io/One-Piece-Bounty-Match/) *(Bản Github Pages)*.
+      * Hoặc mở file `frontend/index.html` bằng trình duyệt bất kỳ.
+
+-----
+
+### 🌐 B. Triển Khai Online PvP (Full Stack)
+
+Để kích hoạt tính năng đấu hạng, kết bạn và PvP thời gian thực, bạn cần triển khai Backend & Database lên **Railway.app**.
+
+#### 1\. Deploy Backend lên Railway
+
+1.  **Fork** repository này về tài khoản GitHub cá nhân.
+2.  Truy cập [Railway.app](https://railway.app/) và kết nối với GitHub.
+3.  Chọn **New Project** → **Deploy from GitHub repo** → Chọn repo vừa fork.
+4.  Cấu hình tại tab **Settings**:
+      * **Root Directory:** `backend`
+      * **Build Command:** `npm install`
+      * **Start Command:** `node server.js`
+
+#### 2\. Cài đặt MySQL Database
+
+1.  Trong project Railway, nhấn **Add Service** → **Database** → **MySQL**.
+2.  Railway sẽ tự động tạo Instance.
+
+#### 3\. Cấu hình Biến Môi Trường (Environment Variables)
+
+Tại service **Backend**, vào tab **Variables** và thêm các biến liên kết với MySQL (Sử dụng *Reference Variables* của Railway):
+
+| Variable | Value (Reference) |
+| :--- | :--- |
+| `MYSQLHOST` | `${{MySQL.MYSQLHOST}}` |
+| `MYSQLPORT` | `${{MySQL.MYSQLPORT}}` |
+| `MYSQLUSER` | `${{MySQL.MYSQLUSER}}` |
+| `MYSQLPASSWORD` | `${{MySQL.MYSQLPASSWORD}}` |
+| `MYSQLDATABASE` | `${{MySQL.MYSQLDATABASE}}` |
+
+> [\!IMPORTANT]
+> Lưu ý: `MySQL` trong cú pháp `${{MySQL...}}` phải trùng với **tên service database** bạn vừa tạo.
+
+#### 4\. Khởi tạo Database Schema
+
+Sử dụng một công cụ như **DBeaver** hoặc **TablePlus**, kết nối vào MySQL thông qua **Public Connection String** (Lấy tại tab *Connect* của service MySQL) và thực thi script sau:
+
+\<details\>
+\<summary\>📑 Nhấn để xem SQL Script khởi tạo\</summary\>
+
+```sql
+CREATE TABLE IF NOT EXISTS users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  player_name VARCHAR(30) NOT NULL UNIQUE,
+  faction ENUM('pirate', 'marine') NOT NULL,
+  password_hash VARCHAR(255) DEFAULT NULL,
+  show_pvp_history TINYINT(1) DEFAULT 1
+);
+
+CREATE TABLE IF NOT EXISTS leaderboard_stats (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL UNIQUE,
+  highest_score INT DEFAULT 0,
+  highest_stage INT DEFAULT 1,
+  best_run_time_seconds INT DEFAULT 0,
+  total_single_runs INT DEFAULT 0,
+  total_pvp_matches INT DEFAULT 0,
+  total_pvp_wins INT DEFAULT 0,
+  ranking_points INT DEFAULT 0,
+  current_rank VARCHAR(100) DEFAULT 'Rookie (Tân Binh)',
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS pvp_matches (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  player1_id INT NOT NULL,
+  player2_id INT NOT NULL,
+  random_mode VARCHAR(50) NOT NULL,
+  player1_score INT NOT NULL,
+  player2_score INT NOT NULL,
+  player1_stage INT NOT NULL,
+  player2_stage INT NOT NULL,
+  player1_time_seconds INT NOT NULL,
+  player2_time_seconds INT NOT NULL,
+  winner_user_id INT NULL,
+  match_result ENUM('player1_win', 'player2_win', 'draw') NOT NULL,
+  player1_rank_points_change INT DEFAULT 0,
+  player2_rank_points_change INT DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (player1_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (player2_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS bot_matches (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  match_id VARCHAR(100) NOT NULL,
+  bot_name VARCHAR(100) NOT NULL,
+  bot_faction ENUM('pirate', 'marine') NOT NULL,
+  random_mode VARCHAR(50) NOT NULL,
+  player_score INT NOT NULL,
+  bot_score INT NOT NULL,
+  player_stage INT NOT NULL,
+  bot_stage INT NOT NULL,
+  player_time_seconds INT NOT NULL,
+  bot_time_seconds INT NOT NULL,
+  match_result ENUM('player1_win', 'player2_win', 'draw') NOT NULL,
+  rank_change INT DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS friend_requests (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  sender_user_id INT NOT NULL,
+  receiver_user_id INT NOT NULL,
+  status ENUM('pending', 'accepted', 'rejected') DEFAULT 'pending',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (sender_user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (receiver_user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS match_invites (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  sender_user_id INT NOT NULL,
+  receiver_user_id INT NOT NULL,
+  room_mode ENUM('friendly', 'ranked') NOT NULL,
+  room_code VARCHAR(12) NOT NULL,
+  status ENUM('pending', 'accepted', 'rejected') DEFAULT 'pending',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (sender_user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (receiver_user_id) REFERENCES users(id) ON DELETE CASCADE
+);
 ```
 
-### 2. Cấu hình Backend
-Di chuyển vào thư mục backend và cài đặt các thư viện cần thiết:
-```bash
-cd backend
-npm install
-```
+\</details\>
 
-### 3. Thiết lập Cơ sở dữ liệu
-* Cài đặt **MySQL** trên máy của bạn.
-* Tạo một database mới (ví dụ: `one_piece_game`).
-* Chạy các lệnh SQL (tìm trong thư mục backend hoặc file `.sql` đi kèm) để khởi tạo cấu trúc bảng.
+#### 5\. Cập nhật Endpoint cho Frontend
 
-### 4. Cấu hình biến môi trường
-Tạo file `.env` nằm trong thư mục `backend/` với nội dung sau:
-```env
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=mật_khẩu_của_bạn
-DB_NAME=ten_database
-DB_PORT=3306
-PORT=3000
-```
+1.  Tại Railway: Vào service **Backend** → **Settings** → **Public Networking** → Nhấn **Generate Domain**.
+2.  Copy domain vừa tạo (ví dụ: `https://your-api.up.railway.app`).
+3.  Trong source code: Mở file `frontend/js/state.js`, tìm biến `API_BASE_URL` và dán domain của bạn vào.
+4.  **Commit & Push** thay đổi lên GitHub để cập nhật trang web.
 
-### 5. Khởi chạy Server
-```bash
-npm run dev
-```
+#### 6\. Duy trì Server (Keep-alive)
 
-### 6. Trải nghiệm Game
-Mở file `index.html` (ở thư mục gốc hoặc frontend) bằng trình duyệt. 
-> **Lưu ý:** Đảm bảo API base URL trong file `state.js` đã trỏ đúng về `http://localhost:3000` (mặc định đã được thiết lập).
+Để backend không bị tắt sau một thời gian không sử dụng (đối với gói Free), bạn nên sử dụng [UptimeRobot](https://uptimerobot.com/) để "ping" vào URL backend với chu kỳ 5 phút một lần.
 
----
+-----
 
 ## 📝 Ghi Chú
 * **Độ khó:** Chế độ **Easy** dành cho người mới; **Insane** và **Impossible** đòi hỏi kỹ năng di chuyển bàn cờ thượng thừa.
