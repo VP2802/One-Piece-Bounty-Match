@@ -68,7 +68,7 @@ Người chơi loại bỏ các cặp hình giống nhau bằng cách nối chú
 | Easy        | 15 phút   | 3     | 9 x 10     | 5         | Chỉ mở Reshuffle sau khi dùng hết gợi ý             |
 | Hard        | 12 phút   | 0     | 10 x 15    | 3         | Mật độ bàn chơi cao tiêu chuẩn                       |
 | Insane      | 10 phút   | 0     | 12 x 15    | 1         | Dịch chuyển bàn theo một hướng cố định trong cả màn |
-| Impossible  | 8 phút    | 0     | 15 x 16    | 0         | Dịch chuyển bàn theo hướng ngẫu nhiên sau mỗi lần nối thành công |
+| Impossible  | 10 phút    | 0     | 15 x 16    | 0         | Dịch chuyển bàn theo hướng ngẫu nhiên sau mỗi lần nối thành công |
 
 *Trong PvP, chế độ được chọn ngẫu nhiên từ Hard, Insane, Impossible (Đấu Thường có thể có cả Easy).*
 
