@@ -1,24 +1,39 @@
-import { constants } from "./state.js";
+import { constants, state } from "./state.js";
+import { notify, showModeSelectScreen } from "./ui.js";
 
 export async function apiRequest(path, method = "GET", body = null) {
-  const options = {
-    method,
-    headers: {
-      "Content-Type": "application/json"
-    }
+  const token = sessionStorage.getItem('authToken');
+  const headers = {
+    "Content-Type": "application/json"
   };
-
-  if (body) {
-    options.body = JSON.stringify(body);
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
   }
+
+  const options = { method, headers };
+  if (body) options.body = JSON.stringify(body);
 
   const response = await fetch(`${constants.API_BASE_URL}${path}`, options);
-  const data = await response.json().catch(() => ({}));
 
-  if (!response.ok) {
-    throw new Error(data.message || "API request failed");
+  if (response.status === 401) {
+    const data = await response.json().catch(() => ({}));
+    if (data.message && data.message.includes('đăng nhập ở nơi khác')) {
+      sessionStorage.removeItem('authToken');
+      state.currentUser = null;
+      notify('Tài khoản của bạn vừa được đăng nhập ở thiết bị khác. Vui lòng đăng nhập lại.', 'error', 6000);
+      showModeSelectScreen();
+      throw new Error('Session expired');
+    }
+    
+    sessionStorage.removeItem('authToken');
+    state.currentUser = null;
+    notify('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.', 'warning', 3000);
+    showModeSelectScreen();
+    throw new Error(data.message || 'Unauthorized');
   }
 
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.message || 'API request failed');
   return data;
 }
 
@@ -180,4 +195,14 @@ export async function leaveRankedQueue(userId) {
 
 export async function fetchRankedQueueStatus(userId) {
   return apiRequest(`/ranked/queue/status/${userId}`, "GET");
+}
+
+export async function fetchFriendsOnlineStatus(userIds) {
+  return apiRequest("/friends/online-status", "POST", { userIds });
+}
+
+export async function unfriend(friendUserId) {
+  return apiRequest("/friends/unfriend", "DELETE", {
+    friend_user_id: friendUserId,
+  });
 }

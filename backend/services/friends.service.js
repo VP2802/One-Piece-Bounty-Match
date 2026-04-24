@@ -1,7 +1,8 @@
 const db = require("../db");
 
 function sendFriendRequest(req, res) {
-  const { sender_user_id, receiver_user_id } = req.body;
+  const  sender_user_id = req.userId;
+  const { receiver_user_id } = req.body;
 
   if (!sender_user_id || !receiver_user_id) {
     return res.status(400).json({
@@ -232,7 +233,7 @@ function getIncomingFriendRequests(req, res) {
 
 function acceptFriendRequest(req, res) {
   const { requestId } = req.params;
-  const { user_id } = req.body;
+  const  user_id  = req.userId;
 
   if (!user_id) {
     return res.status(400).json({
@@ -284,7 +285,7 @@ function acceptFriendRequest(req, res) {
 
 function rejectFriendRequest(req, res) {
   const { requestId } = req.params;
-  const { user_id } = req.body;
+  const  user_id  = req.userId;
 
   if (!user_id) {
     return res.status(400).json({
@@ -334,10 +335,49 @@ function rejectFriendRequest(req, res) {
   });
 }
 
+function unfriend(req, res) {
+  const userId = req.userId; // người gửi yêu cầu hủy kết bạn
+  const { friend_user_id } = req.body;
+
+  if (!friend_user_id) {
+    return res.status(400).json({ message: "Missing friend_user_id" });
+  }
+
+  const sql = `
+    DELETE FROM friend_requests
+    WHERE status = 'accepted'
+      AND (
+        (sender_user_id = ? AND receiver_user_id = ?)
+        OR
+        (sender_user_id = ? AND receiver_user_id = ?)
+      )
+  `;
+
+  db.query(
+    sql,
+    [userId, friend_user_id, friend_user_id, userId],
+    (err, result) => {
+      if (err) {
+        return res.status(500).json({
+          message: "Failed to unfriend",
+          error: err.message,
+        });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: "Friendship not found" });
+      }
+
+      return res.json({ message: "Friend removed successfully" });
+    }
+  );
+}
+
 module.exports = {
   sendFriendRequest,
   getFriendsList,
   getIncomingFriendRequests,
   acceptFriendRequest,
-  rejectFriendRequest
+  rejectFriendRequest,
+  unfriend
 };

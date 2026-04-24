@@ -30,4 +30,8 @@ router.post("/queue/join", rankedQueueService.joinRankedQueue);
 router.post("/queue/leave", rankedQueueService.leaveRankedQueue);
 router.get("/queue/status/:userId", rankedQueueService.getRankedQueueStatus);
 
+router.post("/force-quit", (req, res) => {
+  roomService.forceQuitRoomMatch("ranked", req, res);
+});
+
 module.exports = router;

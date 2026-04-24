@@ -86,3 +86,8 @@
     justify-content: center;
     margin-top: 10px;
 }
+
+#confirmModal{
+    align-items: flex-start;
+    padding-top: 190vh;
+}

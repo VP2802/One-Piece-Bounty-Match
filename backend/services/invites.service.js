@@ -2,7 +2,8 @@ const db = require("../db");
 const { createFriendlyRoomForUser, joinFriendlyRoomByCode } = require("./room.service");
 
 function sendMatchInvite(req, res) {
-  const { sender_user_id, receiver_user_id } = req.body;
+  const sender_user_id = req.userId;
+  const { receiver_user_id } = req.body;
 
   if (!sender_user_id || !receiver_user_id) {
     return res.status(400).json({
@@ -162,7 +163,7 @@ function getIncomingMatchInvites(req, res) {
 
 function acceptMatchInvite(req, res) {
   const { inviteId } = req.params;
-  const { user_id } = req.body;
+  const  user_id  = req.userId;
 
   if (!user_id) {
     return res.status(400).json({
@@ -226,7 +227,7 @@ function acceptMatchInvite(req, res) {
 
 function rejectMatchInvite(req, res) {
   const { inviteId } = req.params;
-  const { user_id } = req.body;
+  const  user_id  = req.userId;
 
   if (!user_id) {
     return res.status(400).json({

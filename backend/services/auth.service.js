@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const { getRankFromPoints } = require("../rank");
 const { normalizeAuthBody } = require("../utils/auth.utils");
 const { findUserWithStatsByName, buildUserPayload } = require("../utils/user.utils");
+const { generateToken } = require('../utils/token');
 
 function signUp(req, res) {
   const normalized = normalizeAuthBody(req, res);
@@ -175,9 +176,18 @@ function signIn(req, res) {
         });
       }
 
-      return res.status(200).json({
-        message: `Welcome back, ${user.player_name}!`,
-        user: buildUserPayload(user)
+      const token = generateToken(user.id);
+      const updateTokenSql = `UPDATE users SET token = ? WHERE id = ?`;
+      db.query(updateTokenSql, [token, user.id], (err) => {
+        if (err) {
+          return res.status(500).json({ message: "Failed to save session" });
+        }
+      
+        return res.status(200).json({
+          message: `Welcome back, ${user.player_name}!`,
+          user: buildUserPayload(user),
+          token: token   
+        });
       });
     });
   });

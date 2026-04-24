@@ -155,6 +155,7 @@ export async function handleAuth() {
     }
 
     state.currentUser = result.user;
+    sessionStorage.setItem('authToken', result.token);
     notify(result.message || "Welcome back!", "success");
     await showPvpLobbyScreen();
     await renderFriendsAndRequests();

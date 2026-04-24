@@ -2,7 +2,9 @@ export const constants = {
   LEADERBOARD_KEY: "onepiece_leaderboard",
   SOUND_SETTINGS_KEY: "onepiece_sound_settings",
   DEFAULT_MASTER_VOLUME: 0.25,
-  API_BASE_URL: "https://one-piece-bounty-match-production.up.railway.app"
+  API_BASE_URL: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:3000'
+    : 'https://one-piece-bounty-match-production.up.railway.app'
 };
 
 export const BOARD_SYMBOLS = [
@@ -30,6 +32,7 @@ export const state = {
   currentBotMatch: null,
   currentGameContext: "offline",
   currentPvpMode: null,
+  currentPvpRoomCode: null,
 
   currentRoomMatch: null,
   roomMatchPolling: null,
@@ -89,4 +92,5 @@ export const state = {
 
   friendlyQueuePolling: null,
   rankedQueuePolling: null,
+  pendingSubmission: null, // { score, stage, time_seconds, mode }
 };
