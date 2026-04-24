@@ -190,7 +190,7 @@ export function startRoomMatchPolling(mode) {
           `${getRoomModeLabel(mode)} room ${state.currentRoomMatch.room_code} is ready. Starting match...`
         );
 
-        if (state.currentGameContext !== "pvp") {
+        if (!state.currentMode || state.isGameOver) {
           startRoomMatch(state.currentRoomMatch, mode);
         }
       }
@@ -215,6 +215,7 @@ export function startRoomMatch(room, mode) {
   state.currentEntryMode = "pvp";
   state.currentPlayType = "single";
   state.currentBoardSeed = room.board_seed;
+  state.currentPvpRoomCode = room.room_code;
 
   setPlayType("single");
   startGame(room.random_mode);
@@ -270,6 +271,13 @@ export async function finishRoomMatch(didClearBoard, mode) {
         `🏆 Your Score: ${finalPlayerScore}`,
         "The final result will be available after your opponent finishes."
       );
+      state.pendingSubmission = {
+        score: finalPlayerScore,
+        stage: playerStage,
+        time_seconds: timeUsedSeconds,
+        mode: mode
+      };
+      startWaitingRoomPolling(mode);
       return;
     }
 
@@ -294,15 +302,21 @@ export async function finishRoomMatch(didClearBoard, mode) {
       title = "DEFEAT!";
     }
 
-    if (mode === "ranked") {
-      const rpText =
-        myPlayer.rank_change > 0
-          ? `+${myPlayer.rank_change} RP`
-          : `${myPlayer.rank_change} RP`;
+    let winnerName = null;
+    if (saved.result !== "draw") {
+      const winnerIsHost = saved.result === "player1_win";
+      winnerName = winnerIsHost
+        ? state.currentRoomMatch.host_user.player_name
+        : state.currentRoomMatch.guest_user.player_name;
+    }
 
+    const resultText = winnerName ? `🏆 ${winnerName} wins!` : "Draw!";
+
+    if (mode === "ranked") {
+      const rpText = myPlayer.rank_change > 0 ? `+${myPlayer.rank_change} RP` : `${myPlayer.rank_change} RP`;
       showEndScreen(
         title,
-        `⚔️ Ranked Match Result • ${saved.result}`,
+        `⚔️ Ranked Match • ${resultText}`,
         `📈 RP Change: ${rpText}`,
         `🏆 New Rank: ${myPlayer.current_rank}`,
         `⚓ Your RP: ${myPlayer.ranking_points} • Opponent RP: ${opponentPlayer.ranking_points}`
@@ -310,16 +324,18 @@ export async function finishRoomMatch(didClearBoard, mode) {
     } else {
       showEndScreen(
         title,
-        `⚔️ Friendly Match Result • ${saved.result}`,
+        `⚔️ Friendly Match • ${resultText}`,
         `🤝 Friendly mode does not change rank points.`,
         `🏆 Your Rank: ${myPlayer.current_rank}`,
         `⚓ Your RP: ${myPlayer.ranking_points} • Opponent RP: ${opponentPlayer.ranking_points}`
       );
     }
+        
 
     state.currentRoomMatch = null;
     state.currentBoardSeed = null;
     state.currentPvpMode = null;
+    state.currentPvpRoomCode = null;
 
     try {
       await renderPvpTop10();
@@ -333,6 +349,39 @@ export async function finishRoomMatch(didClearBoard, mode) {
       ""
     );
   }
+}
+
+export function startWaitingRoomPolling(mode) {
+  stopWaitingRoomPolling();
+
+  state.waitingRoomPolling = setInterval(async () => {
+    if (!state.currentRoomMatch?.room_code || !state.pendingSubmission) {
+      stopWaitingRoomPolling();
+      return;
+    }
+
+    try {
+      const sub = state.pendingSubmission;
+      const result = await submitRoomMatchResult(mode, {
+        room_code: state.currentRoomMatch.room_code,
+        user_id: state.currentUser.id,
+        score: sub.score,
+        stage: sub.stage,
+        time_seconds: sub.time_seconds
+      });
+
+      if (result.saved_match) {
+        stopWaitingRoomPolling();
+        state.pendingSubmission = null;
+        showEndScreenFromFinalResult(result.saved_match, mode);
+      }
+    } catch (error) {}
+  }, 3000);
+}
+
+export function stopWaitingRoomPolling() {
+  clearInterval(state.waitingRoomPolling);
+  state.waitingRoomPolling = null;
 }
 
 export async function handleFriendlyPvpMatch() {
@@ -377,6 +426,8 @@ export async function quitCurrentPvpMatch() {
 
   state.timeLeft = 0;
   state.isGameOver = true;
+  state.currentPvpRoomCode = null;
+  state.currentPvpMode = null;
 
   state.score = 0;
   updateScoreDisplay();
@@ -386,4 +437,59 @@ export async function quitCurrentPvpMatch() {
   } else {
     await finishBotPracticeMatch(false);
   }
+}
+
+function showEndScreenFromFinalResult(saved, mode) {
+  const isHost = state.currentRoomMatch.host_user?.id === state.currentUser.id;
+  const myPlayer = isHost ? saved.player1 : saved.player2;
+  const opponentPlayer = isHost ? saved.player2 : saved.player1;
+
+  state.currentUser = {
+    ...state.currentUser,
+    ranking_points: myPlayer.ranking_points,
+    current_rank: myPlayer.current_rank
+  };
+
+  let title = "DRAW!";
+  if ((isHost && saved.result === "player1_win") || (!isHost && saved.result === "player2_win")) {
+    title = "VICTORY!";
+  } else if (saved.result !== "draw") {
+    title = "DEFEAT!";
+  }
+
+  let winnerName = null;
+  if (saved.result !== "draw") {
+    const winnerIsHost = saved.result === "player1_win";
+    winnerName = winnerIsHost
+      ? state.currentRoomMatch.host_user.player_name
+      : state.currentRoomMatch.guest_user.player_name;
+  }
+
+  const resultText = winnerName ? `🏆 ${winnerName} wins!` : "Draw!";
+
+  if (mode === "ranked") {
+    const rpText = myPlayer.rank_change > 0 ? `+${myPlayer.rank_change} RP` : `${myPlayer.rank_change} RP`;
+    showEndScreen(
+      title,
+      `⚔️ Ranked Match • ${resultText}`,
+      `📈 RP Change: ${rpText}`,
+      `🏆 New Rank: ${myPlayer.current_rank}`,
+      `⚓ Your RP: ${myPlayer.ranking_points} • Opponent RP: ${opponentPlayer.ranking_points}`
+    );
+  } else {
+    showEndScreen(
+      title,
+      `⚔️ Friendly Match • ${resultText}`,
+      `🤝 Friendly mode does not change rank points.`,
+      `🏆 Your Rank: ${myPlayer.current_rank}`,
+      `⚓ Your RP: ${myPlayer.ranking_points} • Opponent RP: ${opponentPlayer.ranking_points}`
+    );
+  }
+
+  state.currentRoomMatch = null;
+  state.currentBoardSeed = null;
+  state.currentPvpMode = null;
+  state.currentPvpRoomCode = null;
+
+  renderPvpTop10().catch(() => {});
 }

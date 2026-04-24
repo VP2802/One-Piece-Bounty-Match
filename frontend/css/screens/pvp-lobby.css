@@ -174,3 +174,40 @@
 #rankedRandomMatchBtn {
   margin-bottom: 8px;
 }
+
+/* =========================================================
+   ONLINE FRIENDS
+   ========================================================= */
+
+.online-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+  margin-bottom: 16px;
+}
+.online-dot.online {
+  background: #4ade80;
+  box-shadow: 0 0 8px #4ade80;
+}
+.online-dot.offline {
+  background: #6b7280;
+  box-shadow: none;
+}
+
+.friend-remove-btn {
+  background: #dc2626;
+  border: 1px solid #dc2626;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.friend-remove-btn:hover {
+  background: #b91c1c;
+  border-color: #b91c1c;
+}

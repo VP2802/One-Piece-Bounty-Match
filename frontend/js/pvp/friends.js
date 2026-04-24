@@ -8,15 +8,36 @@ import {
   sendMatchInvite,
   fetchIncomingMatchInvites,
   acceptMatchInvite,
-  rejectMatchInvite
+  rejectMatchInvite,
+  fetchFriendsOnlineStatus,
+  unfriend
 } from "../api.js";
-import { formatFactionLabel, notify } from "../ui.js";
+import { formatFactionLabel, notify, showConfirmModal } from "../ui.js";
 import { openProfileHistoryModal } from "./profile.js";
 import {
   startRoomMatchPolling,
   showPvpRoomCard,
   updatePvpRoomStatus
 } from "./room.js";
+
+async function updateFriendsOnlineStatus() {
+  if (!state.currentUser) return;
+  const friendElements = document.querySelectorAll('.friend-item');
+  if (friendElements.length === 0) return;
+
+  const userIds = Array.from(friendElements).map(el => Number(el.dataset.userId));
+  try {
+    const { status } = await fetchFriendsOnlineStatus(userIds);
+    friendElements.forEach(el => {
+      const userId = Number(el.dataset.userId);
+      const dot = el.querySelector('.online-dot');
+      if (dot) {
+        dot.className = `online-dot ${status[userId] ? 'online' : 'offline'}`;
+      }
+    });
+  } catch (e) {
+  }
+}
 
 export async function renderFriendsList() {
   if (!dom.friendsListWrap || !state.currentUser) return;
@@ -33,8 +54,11 @@ export async function renderFriendsList() {
     dom.friendsListWrap.innerHTML = friends
       .map(
         (friend) => `
-          <div class="rank-preview">
-            <h3>${friend.player_name}</h3>
+          <div class="rank-preview friend-item" data-user-id="${friend.id}">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="online-dot offline"></span>
+              <h3>${friend.player_name}</h3>
+            </div>
             <p>${formatFactionLabel(friend.faction)} • ${friend.current_rank}</p>
             <p>RP: ${friend.ranking_points} • High Score: ${friend.highest_score}</p>
             <div class="player-search-actions">
@@ -43,6 +67,9 @@ export async function renderFriendsList() {
               </button>
               <button class="secondary-btn friend-invite-btn" data-user-id="${friend.id}">
                 Invite
+              </button>
+              <button class="primary-btn friend-remove-btn" data-user-id="${friend.id}">
+                Remove
               </button>
             </div>
           </div>
@@ -80,6 +107,28 @@ export async function renderFriendsList() {
         }
       });
     });
+
+    dom.friendsListWrap.querySelectorAll(".friend-remove-btn").forEach((button) => {
+      button.addEventListener("click", async () => {
+        const friendUserId = Number(button.dataset.userId);
+
+        const confirmed = await showConfirmModal(
+          "Remove Friend",
+          "Are you sure you want to remove this friend?"
+        );
+        if (!confirmed) return;
+
+        try {
+          await unfriend(friendUserId);
+          notify("Friend removed.", "info", 1800);
+          await renderFriendsList();
+        } catch (error) {
+          notify(error.message || "Failed to remove friend.", "error");
+        }
+      });
+    });
+
+    updateFriendsOnlineStatus();
   } catch (error) {
     dom.friendsListWrap.innerHTML = `
       <p class="panel-note">${error.message || "Failed to load friends list."}</p>
@@ -87,6 +136,8 @@ export async function renderFriendsList() {
   }
 
 }
+
+
 
 export async function renderIncomingFriendRequests() {
   if (!dom.friendRequestsWrap || !state.currentUser) return;
@@ -256,13 +307,27 @@ export function startSocialPolling() {
   stopSocialPolling();
 
   socialPollingInterval = setInterval(async () => {
+    await renderFriendsList();
     await renderIncomingFriendRequests();
     await renderIncomingMatchInvites();
   }, 3000);
+}
+
+let onlineStatusInterval = null;
+
+export function startOnlineStatusPolling() {
+  stopOnlineStatusPolling();
+  onlineStatusInterval = setInterval(updateFriendsOnlineStatus, 5000);
+}
+
+export function stopOnlineStatusPolling() {
+  clearInterval(onlineStatusInterval);
+  onlineStatusInterval = null;
 }
 
 export async function renderFriendsAndRequests() {
   await renderFriendsList();
   await renderIncomingFriendRequests();
   await renderIncomingMatchInvites();
+  startOnlineStatusPolling();
 }

@@ -4,7 +4,7 @@ const { generateBotPracticeResult } = require("../utils/pvp.utils");
 const { saveBotPracticeMatch } = require("./match-save.service");
 
 function createMatch(req, res) {
-  const { user_id } = req.body;
+  const user_id = req.userId;
 
   if (!user_id) {
     return res.status(400).json({
@@ -98,8 +98,8 @@ function createMatch(req, res) {
 }
 
 function submitMatch(req, res) {
+  const user_id = req.userId;
   const {
-    user_id,
     match_id,
     random_mode,
     player_score,

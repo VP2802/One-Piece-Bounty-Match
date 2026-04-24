@@ -136,7 +136,7 @@
         <!-- PVP LOBBY SCREEN -->
         <section id="pvpLobbyScreen" class="screen hidden">
             <div class="screen-top-actions">
-                <button id="pvpLobbyBackBtn" class="ghost-btn">← Back to Mode Select</button>
+                <button id="pvpLobbyBackBtn" class="ghost-btn">🚪 Log Out</button>
             </div>
 
             <div class="layout-two-cols">
@@ -496,6 +496,18 @@
                 </div>
             </div>
         </section>
+
+        <!-- CONFIRM MODAL -->
+        <div id="confirmModal" class="pause-overlay hidden">
+            <div class="pause-card quit-confirm-card" style="max-width: 400px;">
+                <h2 id="confirmModalTitle">Confirm</h2>
+                <p id="confirmModalMessage">Would you like to perform this action?</p>
+                <div class="pause-actions" style="margin-top: 16px;">
+                    <button id="confirmModalOkBtn" class="primary-btn" style="background: #dc2626; border-color: #dc2626;">Confirm</button>
+                    <button id="confirmModalCancelBtn" class="ghost-btn">Cancel</button>
+                </div>
+            </div>
+        </div>
 
          <!-- PROFILE / HISTORY MODAL -->
         <div id="profileHistoryModal" class="pause-overlay hidden">

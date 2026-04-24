@@ -11,6 +11,8 @@ const pvpRoutes = require("./routes/pvp.routes");
 const userRoutes = require("./routes/users.routes");
 const friendsRoutes = require("./routes/friends.routes");
 const invitesRoutes = require("./routes/invites.routes");
+const authMiddleware = require('./middleware/auth');
+const updateOnlineMiddleware = require('./middleware/update-online');
 
 const app = express();
 
@@ -22,6 +24,10 @@ app.get("/", (req, res) => {
 });
 
 app.use("/auth", authRoutes);
+
+app.use(authMiddleware);
+app.use(updateOnlineMiddleware);
+
 app.use("/leaderboard", leaderboardRoutes);
 app.use("/bot", botRoutes);
 app.use("/friendly", friendlyRoutes);

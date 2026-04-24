@@ -1,4 +1,4 @@
-import { state } from "./state.js";
+import { state, constants } from "./state.js";
 import { dom } from "./dom.js";
 import {
   loadSoundSettings,
@@ -31,14 +31,15 @@ import {
   handleCreateRoomMatch,
   handleJoinRoomMatch,
   quitCurrentPvpMatch,
-  isRoomPvpMode
+  isRoomPvpMode,
+  stopWaitingRoomPolling
 } from "./pvp/room.js";
 import {
   openProfileHistoryModal,
   closeProfileHistoryModal
 } from "./pvp/profile.js";
 import { handlePlayerSearch } from "./pvp/social.js";
-import { renderFriendsAndRequests } from "./pvp/friends.js";
+import { renderFriendsAndRequests, stopSocialPolling, stopOnlineStatusPolling } from "./pvp/friends.js";
 import {
   handleRandomFriendlyMatch,
   handleCancelRandomFriendlyMatch,
@@ -126,6 +127,63 @@ function handleEndRun() {
   endContinuousRun();
 }
 
+async function handleLogout() {
+
+  sessionStorage.removeItem('authToken');
+  
+  state.currentUser = null;
+  state.currentEntryMode = null;
+  state.currentGameContext = "offline";
+  state.currentPvpMode = null;
+  state.currentRoomMatch = null;
+  state.currentBotMatch = null;
+  state.currentPvpRoomCode = null;
+  
+  stopSocialPolling();
+  stopOnlineStatusPolling();
+
+  state.pendingSubmission = null;
+  stopWaitingRoomPolling();
+  
+  if (state.friendlyQueuePolling) {
+    clearInterval(state.friendlyQueuePolling);
+    state.friendlyQueuePolling = null;
+  }
+  if (state.rankedQueuePolling) {
+    clearInterval(state.rankedQueuePolling);
+    state.rankedQueuePolling = null;
+  }
+  if (state.roomMatchPolling) {
+    clearInterval(state.roomMatchPolling);
+    state.roomMatchPolling = null;
+  }
+  if (state.roomMatchProgressInterval) {
+    clearInterval(state.roomMatchProgressInterval);
+    state.roomMatchProgressInterval = null;
+  }
+  if (state.opponentScoreInterval) {
+    clearInterval(state.opponentScoreInterval);
+    state.opponentScoreInterval = null;
+  }
+  
+  notify("Bạn đã đăng xuất thành công.", "info", 2000);
+  
+  showModeSelectScreen();
+}
+
+function handleBeforeUnload() {
+  if (!state.currentPvpRoomCode || !state.currentPvpMode) return;
+
+  const token = sessionStorage.getItem('authToken');
+  const body = JSON.stringify({
+    room_code: state.currentPvpRoomCode,
+    token: token
+  });
+
+  const url = `${constants.API_BASE_URL}/${state.currentPvpMode}/force-quit`;
+  navigator.sendBeacon(url, body);
+}
+
 function bindModeSelectEvents() {
   dom.offlineEntryBtn?.addEventListener("click", showOfflineStartScreen);
   dom.pvpEntryBtn?.addEventListener("click", () => showAuthScreen("signin"));
@@ -184,7 +242,7 @@ function bindAuthEvents() {
 }
 
 function bindLobbyEvents() {
-  dom.pvpLobbyBackBtn?.addEventListener("click", showModeSelectScreen);
+  dom.pvpLobbyBackBtn?.addEventListener("click", handleLogout);
 
   dom.practiceBotBtn?.addEventListener("click", async () => {
     await handlePracticeBotMatch();
@@ -320,6 +378,8 @@ function bindWindowEvents() {
     syncTimeColumnHeight();
     clearPath();
   });
+
+  window.addEventListener("beforeunload", handleBeforeUnload);
 }
 
 function bindProfileHistoryEvents() {

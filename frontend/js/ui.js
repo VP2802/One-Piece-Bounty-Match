@@ -8,7 +8,8 @@ import { stopOpponentScoreTracking } from "./pvp/bot.js";
 import {
   stopRoomMatchPolling,
   stopRoomMatchProgressTracking,
-  hidePvpRoomCard
+  hidePvpRoomCard,
+  stopWaitingRoomPolling
 } from "./pvp/room.js";
 import { prepareAuthScreen } from "./pvp/auth.js";
 
@@ -302,10 +303,14 @@ export function showModeSelectScreen() {
   state.currentPvpMode = null;
   state.currentBoardSeed = null;
   state.currentRoomMatch = null;
+  state.currentPvpRoomCode = null;
 
   stopRoomMatchPolling();
   stopRoomMatchProgressTracking();
   hidePvpRoomCard();
+
+  state.pendingSubmission = null;
+  stopWaitingRoomPolling();
 
   if (dom.authPlayerNameInput) {
     dom.authPlayerNameInput.value = "";
@@ -375,6 +380,9 @@ export async function showPvpLobbyScreen() {
   stopRoomMatchProgressTracking();
   stopOpponentScoreTracking();
 
+  state.pendingSubmission = null;
+  stopWaitingRoomPolling();
+
   if (dom.rankedRandomMatchBtn) {
     dom.rankedRandomMatchBtn.classList.remove("hidden");
   }
@@ -396,6 +404,7 @@ export async function showPvpLobbyScreen() {
   state.opponentLiveScore = 0;
   state.opponentLiveStage = 0;
   state.currentRoomMatch = null;
+  state.currentPvpRoomCode = null;
 }
 
 export function showEndScreen(
@@ -452,4 +461,46 @@ export function showStageClearOverlay(stageNumber, timeBonus, modeBonus) {
 
   dom.endScreen?.classList.remove("win-flash");
   dom.endMessage?.classList.remove("win-pop");
+}
+
+// ─── Confirm Modal ────────────────────────────────
+let confirmResolve = null;
+
+export function showConfirmModal(title, message) {
+  return new Promise((resolve) => {
+    const modal = document.getElementById('confirmModal');
+    const titleEl = document.getElementById('confirmModalTitle');
+    const messageEl = document.getElementById('confirmModalMessage');
+    const okBtn = document.getElementById('confirmModalOkBtn');
+    const cancelBtn = document.getElementById('confirmModalCancelBtn');
+
+    if (!modal || !titleEl || !messageEl || !okBtn || !cancelBtn) {
+      resolve(false);
+      return;
+    }
+
+    titleEl.textContent = title || 'Xác nhận';
+    messageEl.textContent = message || 'Bạn có chắc chắn?';
+
+    modal.classList.remove('hidden');
+
+    function cleanup() {
+      modal.classList.add('hidden');
+      okBtn.removeEventListener('click', onOk);
+      cancelBtn.removeEventListener('click', onCancel);
+    }
+
+    function onOk() {
+      cleanup();
+      resolve(true);
+    }
+
+    function onCancel() {
+      cleanup();
+      resolve(false);
+    }
+
+    okBtn.addEventListener('click', onOk);
+    cancelBtn.addEventListener('click', onCancel);
+  });
 }

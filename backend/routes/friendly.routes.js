@@ -30,4 +30,8 @@ router.post("/queue/join", friendlyQueueService.joinFriendlyQueue);
 router.post("/queue/leave", friendlyQueueService.leaveFriendlyQueue);
 router.get("/queue/status/:userId", friendlyQueueService.getFriendlyQueueStatus);
 
+router.post("/force-quit", (req, res) => {
+  roomService.forceQuitRoomMatch("friendly", req, res);
+});
+
 module.exports = router;

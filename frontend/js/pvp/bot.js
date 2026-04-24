@@ -101,6 +101,7 @@ export function startBotPracticeMatch(match) {
   state.currentEntryMode = "pvp";
   state.currentPlayType = "single";
   state.currentBoardSeed = null;
+  state.currentPvpRoomCode = null;
 
   setPlayType("single");
   startGame(match.random_mode);
