@@ -205,6 +205,17 @@ export function startRoomMatchPolling(mode) {
 }
 
 export function startRoomMatch(room, mode) {
+  stopRoomMatchPolling();
+  stopRoomMatchProgressTracking();
+  stopWaitingRoomPolling();
+
+  state.pendingSubmission = null;
+
+  state.isGameOver = false;
+  state.isPaused = false;
+  state.score = 0;
+  state.timeLeft = 0;
+
   if (!room || !room.random_mode || !room.board_seed) {
     notify(`Invalid ${mode} room config.`, "error");
     return;
@@ -262,6 +273,8 @@ export async function finishRoomMatch(didClearBoard, mode) {
       stage: playerStage,
       time_seconds: timeUsedSeconds
     });
+
+    state.currentRoomStatus = result.status === "waiting_for_opponent" ? "waiting" : "finished";
 
     if (result.status === "waiting_for_opponent") {
       showEndScreen(
@@ -330,12 +343,6 @@ export async function finishRoomMatch(didClearBoard, mode) {
         `⚓ Your RP: ${myPlayer.ranking_points} • Opponent RP: ${opponentPlayer.ranking_points}`
       );
     }
-        
-
-    state.currentRoomMatch = null;
-    state.currentBoardSeed = null;
-    state.currentPvpMode = null;
-    state.currentPvpRoomCode = null;
 
     try {
       await renderPvpTop10();
@@ -424,16 +431,15 @@ export async function quitCurrentPvpMatch() {
 
   closeQuitConfirm();
 
+  const mode = state.currentPvpMode;   
   state.timeLeft = 0;
   state.isGameOver = true;
   state.currentPvpRoomCode = null;
-  state.currentPvpMode = null;
-
   state.score = 0;
   updateScoreDisplay();
 
-  if (isRoomPvpMode()) {
-    await finishRoomMatch(false, state.currentPvpMode);
+  if (isRoomPvpMode(mode)) {
+    await finishRoomMatch(false, mode);
   } else {
     await finishBotPracticeMatch(false);
   }
@@ -443,6 +449,8 @@ function showEndScreenFromFinalResult(saved, mode) {
   const isHost = state.currentRoomMatch.host_user?.id === state.currentUser.id;
   const myPlayer = isHost ? saved.player1 : saved.player2;
   const opponentPlayer = isHost ? saved.player2 : saved.player1;
+
+  state.currentRoomStatus = "finished";
 
   state.currentUser = {
     ...state.currentUser,
@@ -485,11 +493,6 @@ function showEndScreenFromFinalResult(saved, mode) {
       `⚓ Your RP: ${myPlayer.ranking_points} • Opponent RP: ${opponentPlayer.ranking_points}`
     );
   }
-
-  state.currentRoomMatch = null;
-  state.currentBoardSeed = null;
-  state.currentPvpMode = null;
-  state.currentPvpRoomCode = null;
 
   renderPvpTop10().catch(() => {});
 }

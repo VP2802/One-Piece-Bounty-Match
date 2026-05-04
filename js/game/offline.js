@@ -255,10 +255,7 @@ export function restartGame() {
   state.opponentLiveScore = 0;
   state.opponentLiveStage = 0;
 
-  if (state.currentGameContext === "pvp") {
-    notify("Return to PvP Lobby to start a new PvP match.", "info");
-    return;
-  }
+  if (state.currentGameContext === "pvp") return;
 
   clearInterval(state.timeInterval);
   clearNextStageTimeout();

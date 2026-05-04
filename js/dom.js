@@ -67,6 +67,7 @@ export const dom = {
   authBackToTabsBtn: document.getElementById("authBackToTabsBtn"),
   factionGroup: document.getElementById("factionGroup"),
   pvpLobbyBackBtn: document.getElementById("pvpLobbyBackBtn"),
+  restartFromEndBtn: document.getElementById("restartFromEndBtn"),
 
   passwordRules: document.getElementById("passwordRules"),
   ruleLength: document.getElementById("rule-length"),

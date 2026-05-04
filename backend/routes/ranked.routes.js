@@ -34,4 +34,8 @@ router.post("/force-quit", (req, res) => {
   roomService.forceQuitRoomMatch("ranked", req, res);
 });
 
+router.post("/rematch", (req, res) => {
+  roomService.requestRematch("ranked", req, res);
+});
+
 module.exports = router;

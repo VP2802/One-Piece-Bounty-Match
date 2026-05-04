@@ -706,6 +706,95 @@ function getMaxTimeForMode(randomMode) {
   return times[randomMode] || 600;
 }
 
+function requestRematch(mode, req, res) {
+  const { room_code } = req.body;
+  const userId = req.userId;
+
+  if (!room_code || !userId) {
+    return res.status(400).json({ message: "Missing room_code or userId" });
+  }
+
+  const store = getRoomMatchStore(mode);
+  const room = store?.get(String(room_code).toUpperCase());
+  if (!room) {
+    return res.status(404).json({ message: "Room not found" });
+  }
+
+  if (room.status !== "finished") {
+    return res.status(400).json({ message: "Room is not finished yet" });
+  }
+
+  const isHost = room.host_user?.id === userId;
+  const isGuest = room.guest_user?.id === userId;
+  if (!isHost && !isGuest) {
+    return res.status(403).json({ message: "You are not part of this room" });
+  }
+
+  const playerSlot = isHost ? "host" : "guest";
+
+  // Khởi tạo rematch_votes nếu chưa có
+  if (!room.rematch_votes) {
+    room.rematch_votes = { host: false, guest: false };
+  }
+
+  // Nếu đã có timeout cũ (từ lần trước) thì hủy để tạo mới
+  if (room._rematchTimeout) {
+    clearTimeout(room._rematchTimeout);
+    room._rematchTimeout = null;
+  }
+
+  // Ghi nhận phiếu của người hiện tại
+  room.rematch_votes[playerSlot] = true;
+
+  // Nếu cả hai cùng đồng ý
+  if (room.rematch_votes.host && room.rematch_votes.guest) {
+    // Hủy timeout nếu có
+    if (room._rematchTimeout) {
+      clearTimeout(room._rematchTimeout);
+      delete room._rematchTimeout;
+    }
+
+    const board_seed = generateBoardSeed();
+    const randomModes = mode === "friendly"
+      ? ["easy", "hard", "insane", "impossible"]
+      : ["hard", "insane", "impossible"];
+    const random_mode = randomModes[Math.floor(Math.random() * randomModes.length)];
+
+    // Reset room cho trận mới
+    room.status = "ready";
+    room.board_seed = board_seed;
+    room.random_mode = random_mode;
+    room.submitted_results = { host: null, guest: null };
+    room.live_progress = {
+      host: { score: 0, stage: 0, updated_at: Date.now() },
+      guest: { score: 0, stage: 0, updated_at: null },
+      host_last_active: Date.now(),
+      guest_last_active: null
+    };
+    delete room.final_result;
+    delete room.rematch_votes;
+
+    return res.json({
+      message: "Rematch accepted! New match starting...",
+      room: sanitizeRoomMatch(room),
+      rematch_ready: true
+    });
+  }
+
+  // Nếu chưa đủ cả hai, đặt timeout 30s tự động hủy phiếu
+  room._rematchTimeout = setTimeout(() => {
+    // Xóa phiếu và timeout
+    delete room.rematch_votes;
+    delete room._rematchTimeout;
+    // Giữ nguyên trạng thái finished (có thể giữ final_result để hiển thị)
+  }, 30000); // 30 giây
+
+  return res.json({
+    message: "Rematch vote recorded. Waiting for opponent...",
+    rematch_ready: false
+  });
+}
+
 module.exports = {
   createRoomMatch,
   joinRoomMatch,
@@ -717,5 +806,6 @@ module.exports = {
   joinFriendlyRoomByCode,
   createRankedRoomForUser,
   joinRankedRoomByCode,
-  forceQuitRoomMatch
+  forceQuitRoomMatch,
+  requestRematch
 };
