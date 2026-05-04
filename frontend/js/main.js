@@ -1,5 +1,6 @@
 import { state, constants } from "./state.js";
 import { dom } from "./dom.js";
+import { apiRequest } from "./api.js"
 import {
   loadSoundSettings,
   applySoundSettings,
@@ -32,7 +33,13 @@ import {
   handleJoinRoomMatch,
   quitCurrentPvpMatch,
   isRoomPvpMode,
-  stopWaitingRoomPolling
+  stopWaitingRoomPolling,
+  stopRoomMatchPolling,
+  stopRoomMatchProgressTracking,
+  startRoomMatch,              
+  showPvpRoomCard,               
+  updatePvpRoomStatus,           
+  startRoomMatchPolling
 } from "./pvp/room.js";
 import {
   openProfileHistoryModal,
@@ -166,7 +173,7 @@ async function handleLogout() {
     state.opponentScoreInterval = null;
   }
   
-  notify("Bạn đã đăng xuất thành công.", "info", 2000);
+  notify("Successfully logged out.", "info", 2000);
   
   showModeSelectScreen();
 }
@@ -360,8 +367,53 @@ function bindEndScreenEvents() {
     showOfflineStartScreen();
   });
 
-  const restartFromEndBtn = document.getElementById("restartFromEndBtn");
-  restartFromEndBtn?.addEventListener("click", restartGame);
+  dom.restartFromEndBtn?.addEventListener("click", async () => {
+    // Chỉ xử lý rematch khi đang ở PvP và có room_code (phòng cũ)
+    if (
+      state.currentGameContext === "pvp" &&
+      state.currentRoomMatch?.room_code &&
+      state.currentPvpMode
+    ) {
+      const mode = state.currentPvpMode;
+
+      // 🔧 Dọn dẹp tất cả polling cũ trước khi rematch
+      stopRoomMatchPolling();
+      stopRoomMatchProgressTracking();
+      stopWaitingRoomPolling();
+
+      // Xóa trạng thái chờ submit kết quả (nếu có)
+      state.pendingSubmission = null;
+
+      // Reset điểm đối thủ cũ về 0 để hiển thị sạch
+      state.opponentLiveScore = 0;
+      state.opponentLiveStage = 0;
+
+      try {
+        const result = await apiRequest(`/${mode}/rematch`, "POST", {
+          room_code: state.currentRoomMatch.room_code
+        });
+
+        if (result.rematch_ready) {
+          notify("Both are ready! The match begins...", "success", 2000);
+          startRoomMatch(result.room, mode);
+          return;
+        }
+
+        // Mới một người yêu cầu → hiện phòng chờ
+        notify("Rematch request sent. Waiting for opponent...", "info", 2000);
+        dom.endScreen?.classList.add("hidden");
+        showPvpRoomCard();
+        updatePvpRoomStatus("Waiting for opponent to accept rematch...");
+        startRoomMatchPolling(mode);
+      } catch (error) {
+        notify(error.message || "Unable to send rematch request.", "error");
+      }
+      return;
+    }
+
+    // Nếu không phải PvP (offline) thì restart bình thường
+    restartGame();
+  });
 }
 
 function bindAudioAutoNextTrack() {

@@ -444,6 +444,13 @@ export function showEndScreen(
     dom.endScreen?.classList.add("win-flash");
     dom.endMessage?.classList.add("win-pop");
   }
+
+  if (dom.restartFromEndBtn) {
+    const shouldShowRematch = state.currentGameContext === "pvp"
+      && !!state.currentRoomMatch?.room_code
+      && state.currentRoomStatus === "finished";
+    dom.restartFromEndBtn.classList.toggle("hidden", !shouldShowRematch);
+  }
 }
 
 export function showStageClearOverlay(stageNumber, timeBonus, modeBonus) {
