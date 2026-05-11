@@ -230,6 +230,7 @@ export function startRoomMatch(room, mode) {
 
   setPlayType("single");
   startGame(room.random_mode);
+  startRoomMatchPolling(mode);
   startRoomMatchProgressTracking(mode);
 
   notify(
